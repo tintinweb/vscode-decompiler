@@ -1,0 +1,79 @@
+{
+    "name": "vscode-decompiler",
+    "displayName": "Decompiler",
+    "description": "Decompile the $h*! out of things",
+    "version": "0.0.1",
+    "keywords": [
+        "security",
+        "decompile",
+        "decompiler",
+        "ghidra",
+        "ida",
+        "idapro",
+        "binary",
+        "executable",
+        "java",
+        "apk"
+    ],
+    "publisher": "tintinweb",
+    "icon": "images/icon.png",
+    "engines": {
+        "vscode": "^1.20.2"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "bugs": {
+        "url": "https://github.com/tintinweb/vscode-decompiler/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tintinweb/vscode-decompiler"
+    },
+    "main": "./src/extension.js",
+    "activationEvents": [
+        "onFileSystem:decompileFs",
+        "*"
+    ],
+    "contributes": {
+        "commands": [
+            {
+                "command": "vscode-decompiler.decompile",
+                "title": "Decompile",
+                "category": "Decompiler"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Decompiler",
+            "properties": {
+                "vscode-decompiler.tool.ghidra.path": {
+                    "type": "string",
+                    "default": "/Users/tintin/workspace/sectools/ghidra_9.1.2_PUBLIC/support/analyzeHeadless",
+                    "description": "Path to ghidra executable"
+                },
+                "vscode-decompiler.tool.jdcli.path": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to jd-cli executable"
+                },
+                "vscode-decompiler.tool.dex2jar.path": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to dex2jar executable"
+                }
+            }
+        },
+        "menus": {
+            "explorer/context": [
+                {
+                    "command": "vscode-decompiler.decompile",
+                    "group": "z_Decompile!"
+                }
+            ]
+        }
+    },
+    "dependencies": {
+        "tmp": "^0.2.1"
+    }
+}

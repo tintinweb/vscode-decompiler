@@ -4,7 +4,7 @@
 </sup><br/><br/>
 
 
-# VSCode Decompiler!
+# Decompiler!
 
 Let's be honest, there is no reason to remember how to decompile stuff with the various tools available. Wouldn't it be nice to be able to decompile the $h*! out of things right off the fingertips in visual studio code? Well, here we go. 
 

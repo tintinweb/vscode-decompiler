@@ -82,6 +82,7 @@ function onActivate(context) {
         context.workspaceState.update("vscodeDecompiler.pendingUri", "").then(() => {
             if(Date.now() - parseInt(timestamp) <= 30 * 1000){
                 // 30sec grace period. ignore all other pendingUris
+                console.log("restarting decompile for: " + pendingUri);
                 vscode.commands.executeCommand("vscode-decompiler.decompile", vscode.Uri.parse(pendingUri));
             }
         });

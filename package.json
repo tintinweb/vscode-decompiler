@@ -13,7 +13,15 @@
         "binary",
         "executable",
         "java",
-        "apk"
+        "class",
+        "pe",
+        "elf",
+        "reverse",
+        "engineering",
+        "apk",
+        "android",
+        "jadx",
+        "dex"
     ],
     "publisher": "tintinweb",
     "icon": "images/icon.png",
@@ -49,7 +57,7 @@
             "properties": {
                 "vscode-decompiler.tool.ghidra.path": {
                     "type": "string",
-                    "default": "/Users/tintin/workspace/sectools/ghidra_9.1.2_PUBLIC/support/analyzeHeadless",
+                    "default": "",
                     "description": "Path to ghidra executable"
                 },
                 "vscode-decompiler.tool.jdcli.path": {
@@ -61,6 +69,29 @@
                     "type": "string",
                     "default": "",
                     "description": "Path to dex2jar executable"
+                },
+                "vscode-decompiler.tool.jadx.path": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to jadx executable"
+                },
+                "vscode-decompiler.apk.decompiler.selected": {
+                    "type": "string",
+                    "enum": [
+                        "jadx",
+                        "jd-cli"
+                    ],
+                    "default": "jadx",
+                    "description": "Select the APK decompiler of preference"
+                },
+                "vscode-decompiler.java.decompiler.selected": {
+                    "type": "string",
+                    "enum": [
+                        "jadx",
+                        "jd-cli"
+                    ],
+                    "default": "jd-cli",
+                    "description": "Select the Java decompiler of preference"
                 }
             }
         },
@@ -74,6 +105,7 @@
         }
     },
     "dependencies": {
-        "tmp": "^0.2.1"
+        "tmp": "^0.2.1",
+        "which": "^2.0.2"
     }
 }

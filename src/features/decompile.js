@@ -19,12 +19,15 @@ const settings = require('../settings');
 
 const { DecompileMemFsProvider } = require('./fsProvider');
 
+function normalizePlatformUri(uriString){
+    return uriString.replace(/\\/g, '/');
+}
 
 function memFsFromFileSystem(memFs, anchor, srcPath) {
 
     const getFiles = async function (dir) {
         let vPath = path.relative(srcPath, dir);
-        memFs.createDirectory(vscode.Uri.parse(`decompileFs:/${path.join(anchor, vPath)}`));
+        memFs.createDirectory(vscode.Uri.parse(normalizePlatformUri(`decompileFs:/${path.join(anchor, vPath)}`)));
 
 
         const subdirs = await readdir(dir);
@@ -34,7 +37,7 @@ function memFsFromFileSystem(memFs, anchor, srcPath) {
                 return getFiles(res);
             } else {
                 memFs.writeFile(
-                    vscode.Uri.parse(`decompileFs:/${path.join(anchor, path.relative(srcPath, res))}`),
+                    vscode.Uri.parse(normalizePlatformUri(`decompileFs:/${path.join(anchor, path.relative(srcPath, res))}`)),
                     Buffer.from(fs.readFileSync(res)),
                     { create: true, overwrite: true }
                 );
@@ -45,7 +48,7 @@ function memFsFromFileSystem(memFs, anchor, srcPath) {
         return files.reduce((a, f) => a.concat(f), []);
     };
 
-    memFs.createDirectory(vscode.Uri.parse(`decompileFs:/${anchor}`));
+    memFs.createDirectory(vscode.Uri.parse(normalizePlatformUri(`decompileFs:/${anchor}`)));
     return getFiles(srcPath);
 }
 
@@ -340,7 +343,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                             data = `${data}`;
                             console.log(data);
                             if (progressCallback) {
-                                progressCallback({ message: "java decompile", increment: 4 });
+                                progressCallback({ message: "java decompile", increment: 20 });
                             }
                         }
                     }

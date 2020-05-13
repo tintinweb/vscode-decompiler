@@ -72,7 +72,7 @@ function onActivate(context) {
                     }
                 },
                 error => {
-                    vscode.window.showErrorMessage(`Failed to run decompiliation command. Check your configuration. ${JSON.stringify(ret)}`);
+                    vscode.window.showErrorMessage(`Failed to run decompiliation command. Check your configuration. ${JSON.stringify(error)}`);
                 });
             }
         )

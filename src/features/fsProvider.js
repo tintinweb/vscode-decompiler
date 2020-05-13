@@ -145,7 +145,7 @@ class DecompileMemFsProvider /* vscode.FileSystemProvider */ {
     // --- lookup
 
     _lookup(uri, silent) {
-        let parts = uri.path.split(path.sep);
+        let parts = uri.path.split('/');
         let entry = this.root;
         for (const part of parts) {
             if (!part) {

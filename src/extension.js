@@ -70,6 +70,9 @@ function onActivate(context) {
                     } else {
                         vscode.window.showErrorMessage("Failed to decompile file :/");
                     }
+                },
+                error => {
+                    vscode.window.showErrorMessage(`Failed to run decompiliation command. Check your configuration. ${JSON.stringify(ret)}`);
                 });
             }
         )

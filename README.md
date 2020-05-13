@@ -10,9 +10,10 @@ Let's be honest, there is no reason to remember how to decompile stuff with the 
 
 This extension can be used to decompile ...
 
-* Binary executables for various platforms (as supported by Ghidra; Windows PE, Linux ELF, etc..)
-* Java Jar archives and compiled Classes
-* Android APKs
+* <img width="17" alt="Screenshot 2020-05-13 at 14 11 53" src="https://user-images.githubusercontent.com/2865694/81810700-b7e73b80-9523-11ea-9ed3-f52704689939.png"> Binary executables for various platforms (as supported by Ghidra; Windows PE, Linux ELF, etc..)
+* <img width="16" alt="Screenshot 2020-05-13 at 14 10 09" src="https://user-images.githubusercontent.com/2865694/81810613-8a9a8d80-9523-11ea-9fd9-0c83274746d7.png"> Java Jar archives and compiled Classes
+* <img width="15" alt="Screenshot 2020-05-13 at 14 09 49" src="https://user-images.githubusercontent.com/2865694/81810616-8c645100-9523-11ea-9bd1-cfddde16a420.png"> Android APKs
+
 
 ![vscode-decompiler](https://user-images.githubusercontent.com/2865694/81797377-faeae400-950e-11ea-9060-2712dbb4740f.gif)
 

@@ -64,6 +64,7 @@ class Tools {
         if (options.onClose) cmd.on('close', options.onClose);
         if (options.onStdOut) cmd.stdout.on('data', options.onStdOut);
         if (options.onStdErr) cmd.stderr.on('data', options.onStdErr);
+        cmd.on('error', options.onClose);
 
         return cmd;
     }

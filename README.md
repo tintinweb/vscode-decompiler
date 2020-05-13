@@ -8,17 +8,19 @@
 
 Let's be honest, there is no reason to remember how to decompile stuff with the various tools available. Wouldn't it be nice to be able to decompile the $h*! out of things right off the fingertips in visual studio code? Well, here we go. 
 
-This extension decompiles the $h*! out of ...
+This extension can be used to decompile ...
 
-* Binaries supported by Ghidra (windows PE, linux ELF, etc)
-* Java jars and classes
+* Binary executables for various platforms (as supported by Ghidra; Windows PE, Linux ELF, etc..)
+* Java Jar archives and compiled Classes
 * Android APKs
 
 ![vscode-decompiler](https://user-images.githubusercontent.com/2865694/81797377-faeae400-950e-11ea-9060-2712dbb4740f.gif)
 
-Just `right-click → Decompile` on any of the supported file formats and wait for the magic to happen.
+Just `right-click → Decompile` on a supported executable and wait for the magic to happen.
 
-Decompiled files are added to a temporary sub-workspace, just `right-click → Download` in the sub-workspace to save the decompiled files.
+The decompilation result is added to a temporary sub-workspace. You can `right-click → Download` files to your local file-system right from the sub-workspace.
+
+Have phun 🙌
 
 
 ## Setup
@@ -29,7 +31,8 @@ Decompiled files are added to a temporary sub-workspace, just `right-click → D
   * otherwise please specify the path to `<ghidra>/support/analyzeHeadless` in `code → preferences → settings: vscode-decompiler.tool.ghidra.path` and make sure that the `analyzeHeadless` script works (and is not prompting for e.g. the JDK Home :))
   ![ghidraconf](https://user-images.githubusercontent.com/2865694/81807509-7dc76b00-951e-11ea-99d7-359bd624cce5.png)
 
-* The other - way smaller - tools are bundled with the extension. Just make sure Java is available in your `PATH`.
+* Other tools are bundled with the extension. Just make sure Java is available in your `PATH`.
+
 
 ## Credits
 
@@ -39,7 +42,7 @@ This extension wouldn't be possible without the smarties developing the followin
 * [JadX](https://github.com/skylot/jadx/)
 * [JD-CLI](https://github.com/kwart/jd-cmd)
 * [dex2Jar](https://github.com/pxb1988/dex2jar)
-* Logo by LogoMakr (CC)
+* LogoMakr (CC)
 
 ## Release Notes
 

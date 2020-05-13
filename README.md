@@ -23,10 +23,10 @@ Decompiled files are added to a temporary sub-workspace, just `right-click → D
 
 ## Setup
 
-* Requires Java to be installed system-wide. Just install the latest JRE/JDK for your OS (e.g. openJDK).
-* Requires a working installation of [Ghidra](https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_9.1.2_build)
+* Requires Java (11+) to be installed system-wide. Just install the latest JRE/JDK for your OS (e.g. openJDK).
+* Requires a working installation of [Ghidra](https://ghidra-sre.org/)
   * either available in `PATH` (e.g. because you installed with with `brew cask install ghidra`)
-  * otherwise please specify the path to `<ghidra>/support/analyzeHeadless` in `code → preferences → settings: vscode-decompiler.tool.ghidra.path`
+  * otherwise please specify the path to `<ghidra>/support/analyzeHeadless` in `code → preferences → settings: vscode-decompiler.tool.ghidra.path` and make sure that the `analyzeHeadless` script works (and is not prompting for e.g. the JDK Home :))
 * The other - way smaller - tools are bundled with the extension. Just make sure Java is available in your `PATH`.
 
 ## Credits

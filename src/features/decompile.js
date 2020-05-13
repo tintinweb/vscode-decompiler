@@ -117,12 +117,12 @@ class Tools {
                             console.log("updated setting: vscode-decompiler.tool.ghidra.path");
                         }
                         if(!toolpath){
-                            vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. Please run use your package manager or install it from the official website and configure the path to `<ghidra>/../support/analyzeHeadless` in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`");
+                            vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. please use your package manager or install it from the official website and configure the path to `<ghidra>/../support/analyzeHeadless` in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`");
                             return reject();
                         }
                         break;
                     default: 
-                        vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. Please run use your package manager or install it from the official website and configure the path to `<ghidra>/../support/analyzeHeadless.bat` in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`");
+                        vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. please use your package manager or install it from the official website and configure the path to `<ghidra>/../support/analyzeHeadless.bat` in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`");
                         return reject();
                 }
                 //process.platform

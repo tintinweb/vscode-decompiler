@@ -58,7 +58,7 @@
                 "vscode-decompiler.tool.ghidra.path": {
                     "type": "string",
                     "default": "",
-                    "description": "Path to ghidra executable"
+                    "description": "Path to ghidra/support/analyzeHeadless executable"
                 },
                 "vscode-decompiler.tool.jdcli.path": {
                     "type": "string",

@@ -61,14 +61,16 @@ class Tools {
     }
 
     static _exec(command, args, options) {
-        console.log(`${command} ${args.join(" ")}`);
         const cmd = spawn(command, args, {
-            stdio: options.stdio || ['ignore', options.onStdOut ? 'pipe' : 'ignore', options.onStdErr ? 'pipe' : 'ignore']
+            stdio: options.stdio || ['ignore', options.onStdOut ? 'pipe' : 'ignore', options.onStdErr ? 'pipe' : 'ignore'],
+            shell: options.shell
         });
-        if (options.onClose) cmd.on('close', options.onClose);
+        if (options.onClose) {
+            cmd.on('close', options.onClose);
+            cmd.on('error', options.onClose);
+        }
         if (options.onStdOut) cmd.stdout.on('data', options.onStdOut);
         if (options.onStdErr) cmd.stderr.on('data', options.onStdErr);
-        cmd.on('error', options.onClose);
 
         return cmd;
     }
@@ -153,7 +155,7 @@ class Tools {
                  */
                 Tools._exec(toolpath,
                     [projectPath, "vscode-decompiler",
-                        "-import", `"${binaryPath}"`,
+                        "-import", `${binaryPath}`,
                         "-scriptPath", `${path.join(settings.extension().extensionPath, "scripts")}`,
                         //"-postscript", "ghidra_annotate.py", 
                         "-postscript", "ghidra_decompile.py", outputFilePath
@@ -161,6 +163,9 @@ class Tools {
                     {
                         onClose: (code) => {
                             if (code == 0) {
+                                if(!fs.existsSync(outputFilePath)){
+                                    return reject({err:"Output file not produced"});
+                                }
                                 const decompiled = `/** 
 *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
 *  Target:    ${binaryPath}
@@ -220,7 +225,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                 if (err) throw err;
 
                 console.log('Project Directory: ', projectPath);
-                let outputFilePath = tmp.tmpNameSync(options);
+                let outputFilePath = path.join(projectPath, `${path.basename(binaryPath, path.extname(binaryPath))}.c`)
 
                 /** 
                  * 
@@ -234,16 +239,30 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                     cmd = [Ida32._get_command(), '-B', '-M', '-S"%s"' % decompile_script_cmd, '"' + source + '"']
                  * 
                  */
-                let scriptCmd = `${path.join(settings.extension().extensionPath, "scripts", "ida_batch_decompile.py")} -o\\"${outputFilePath}\\"`;
+
+                //generate idaw candidates:
+                let toolpathOther = path.basename(toolpath).includes("64") ? toolpath.replace(/(ida.?)64(.*)/g,"$1$2"): toolpath.replace(/(ida.?)([^\d].*)/g,"$164$2");  //idaw.exe, idaw64.exe
+
+                let scriptCmd = `${path.join(settings.extension().extensionPath, "scripts", "ida_batch_decompile.py")} -o\\"${projectPath}\\"`;
+                if(binaryPath.includes('"')){
+                    return reject({err:"Dangerous filename"}); //binarypath is quoted.
+                }
+
                 Tools._exec(toolpath,
                     [
-                        '-B', "-M",
+                        '-A', '-B', "-M",
+                        `-o"${projectPath}"`,
                         `-S"${scriptCmd}"`,
                         `"${binaryPath}"`
                     ],
                     {
+                        shell: true, /* dangerous :/ filename may inject stuff? */
                         onClose: (code) => {
                             if (code == 0) {
+                                if(!fs.existsSync(outputFilePath)){
+                                    return reject({err:"Output file not produced"});
+                                }
+
                                 const decompiled = `/** 
 *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
 *  Target:    ${binaryPath}
@@ -264,20 +283,59 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                     type: "single",
                                     language: "cpp"
                                 });
+                                cleanupCallback();
                             } else {
-                                reject({ code: code, type: "single" });
+                                //try other idaw variant (idaw -> idaw64)
+                                //******************************* UGLY COPY PASTA */
+
+                                Tools._exec(toolpathOther,
+                                    [
+                                        '-A', '-B', "-M",
+                                        `-o"${projectPath}"`,
+                                        `-S"${scriptCmd}"`,
+                                        `"${binaryPath}"`
+                                    ],
+                                    {
+                                        shell: true, /* dangerous :/ filename may inject stuff? */
+                                        onClose: (code) => {
+                                            if (code == 0) {
+                                                if(!fs.existsSync(outputFilePath)){
+                                                    return reject({err:"Output file not produced"});
+                                                }
+                
+                                                const decompiled = `/** 
+                *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
+                *  Target:    ${binaryPath}
+                **/
+                
+                ${fs.readFileSync(outputFilePath, 'utf8')};`;
+                
+                                                ctrl.memFs.writeFile(
+                                                    vscode.Uri.parse(`decompileFs:/${path.basename(binaryPath)}.cpp`),
+                                                    Buffer.from(decompiled),
+                                                    { create: true, overwrite: true }
+                                                );
+                
+                                                resolve({
+                                                    code: code,
+                                                    data: decompiled,
+                                                    memFsPath: `decompileFs:/${path.basename(binaryPath)}.cpp`,
+                                                    type: "single",
+                                                    language: "cpp"
+                                                });
+                                            } else {
+                                                //try other idaw variant (idaw -> idaw64)
+                                                reject({type:"single", code:code, err:"Failed to run decompiler"})
+                                                
+                                            }
+                                            cleanupCallback();
+                                        }
+                                    }
+                                );
+
+                                //******************************* */
                             }
-                            cleanupCallback();
-                        },
-                        OnStdOut: (data) => {
-                            console.log(data);
-                        },
-                        onStdErr: (data) => {
-                            data = `${data}`;
-                            console.log(data);
-                            if (progressCallback && data.startsWith("#DECOMPILE-PROGRESS,")) {
-                                progressCallback(data.replace("#DECOMPILE-PROGRESS,", "").split(","));
-                            }
+                            
                         }
                     }
                 );
@@ -498,7 +556,7 @@ class DecompileCtrl {
                 return Tools.jadxDecompile(uri.fsPath, progressCallback, this);
             default:
                 //assume binary?
-                if(settings.extensionConfig().default.decompiler.selected=="idaPro"){
+                if(settings.extensionConfig().default.decompiler.selected.includes("idaPro")){
                     return Tools.idaDecompile(uri.fsPath, progressCallback, this);
                 }
                 return Tools.ghidraDecompile(uri.fsPath, progressCallback, this);

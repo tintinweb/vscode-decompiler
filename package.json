@@ -41,6 +41,7 @@
     "main": "./src/extension.js",
     "activationEvents": [
         "onFileSystem:decompileFs",
+        "onCommand:vscode-decompiler.decompile",
         "*"
     ],
     "contributes": {
@@ -56,6 +57,11 @@
             "title": "Decompiler",
             "properties": {
                 "vscode-decompiler.tool.ghidra.path": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to ghidra/support/analyzeHeadless executable"
+                },
+                "vscode-decompiler.tool.idaPro.path": {
                     "type": "string",
                     "default": "",
                     "description": "Path to ghidra/support/analyzeHeadless executable"
@@ -92,6 +98,15 @@
                     ],
                     "default": "jd-cli",
                     "description": "Select the Java decompiler of preference"
+                },
+                "vscode-decompiler.default.decompiler.selected": {
+                    "type": "string",
+                    "enum": [
+                        "ghidra",
+                        "idaPro"
+                    ],
+                    "default": "ghidra",
+                    "description": "Select the default decompiler of preference"
                 }
             }
         },

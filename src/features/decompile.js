@@ -61,6 +61,7 @@ class Tools {
     }
 
     static _exec(command, args, options) {
+        console.log(`${command} ${args.join(" ")}`);
         const cmd = spawn(command, args, {
             stdio: options.stdio || ['ignore', options.onStdOut ? 'pipe' : 'ignore', options.onStdErr ? 'pipe' : 'ignore']
         });
@@ -129,9 +130,6 @@ class Tools {
                         vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. please use your package manager or install it from the official website and configure the path to `<ghidra>/../support/analyzeHeadless.bat` in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`");
                         return reject();
                 }
-                //process.platform
-                ///Users/tintin/workspace/sectools/ghidra_9.1.2_PUBLIC/support/analyzeHeadless
-                //brew cask install ghidra
             }
 
             console.log(toolpath);
@@ -155,8 +153,11 @@ class Tools {
                  */
                 Tools._exec(toolpath,
                     [projectPath, "vscode-decompiler",
-                        "-import", binaryPath,
-                        "-postscript", path.join(settings.extension().extensionPath, "./scripts/ghidra_decompile.py"), outputFilePath],
+                        "-import", `"${binaryPath}"`,
+                        "-scriptPath", `${path.join(settings.extension().extensionPath, "scripts")}`,
+                        //"-postscript", "ghidra_annotate.py", 
+                        "-postscript", "ghidra_decompile.py", outputFilePath
+                    ],
                     {
                         onClose: (code) => {
                             if (code == 0) {
@@ -184,6 +185,92 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                 reject({ code: code, type: "single" });
                             }
                             cleanupCallback();
+                        },
+                        onStdErr: (data) => {
+                            data = `${data}`;
+                            console.log(data);
+                            if (progressCallback && data.startsWith("#DECOMPILE-PROGRESS,")) {
+                                progressCallback(data.replace("#DECOMPILE-PROGRESS,", "").split(","));
+                            }
+                        }
+                    }
+                );
+            });
+        });
+    }
+
+    static idaDecompile(binaryPath, progressCallback, ctrl) {
+        return new Promise((resolve, reject) => {
+            let toolpath = settings.extensionConfig().tool.idaPro.path;
+
+            if (!toolpath) {
+                vscode.window.showWarningMessage("`IdaPro` is required to decompile binaries. please configure the path to `<ida>/ida[wl].exe` in: code -> preferences -> settings -> `vscode-decompiler.tool.idaPro.path`");
+                return reject();
+            }
+
+            console.log(toolpath);
+            tmp.setGracefulCleanup();
+
+            let options = {
+                unsafeCleanup: true
+            };
+
+            // create temp-project dir
+            tmp.dir(options, (err, projectPath, cleanupCallback) => {
+                if (err) throw err;
+
+                console.log('Project Directory: ', projectPath);
+                let outputFilePath = tmp.tmpNameSync(options);
+
+                /** 
+                 * 
+                 * decompile
+                 * 
+                 * 
+                 *  idascript = os.path.abspath(os.path.join(get_download_dir(), "ida_batch_decompile.py"))
+                    destination_file = os.path.join(destination, os.path.split(source)[1].rsplit(".", 1)[0] + '.c')
+
+                    decompile_script_cmd = '%s -o\\"%s\\"' % (idascript, destination_file)
+                    cmd = [Ida32._get_command(), '-B', '-M', '-S"%s"' % decompile_script_cmd, '"' + source + '"']
+                 * 
+                 */
+                let scriptCmd = `${path.join(settings.extension().extensionPath, "scripts", "ida_batch_decompile.py")} -o\\"${outputFilePath}\\"`;
+                Tools._exec(toolpath,
+                    [
+                        '-B', "-M",
+                        `-S"${scriptCmd}"`,
+                        `"${binaryPath}"`
+                    ],
+                    {
+                        onClose: (code) => {
+                            if (code == 0) {
+                                const decompiled = `/** 
+*  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
+*  Target:    ${binaryPath}
+**/
+
+${fs.readFileSync(outputFilePath, 'utf8')};`;
+
+                                ctrl.memFs.writeFile(
+                                    vscode.Uri.parse(`decompileFs:/${path.basename(binaryPath)}.cpp`),
+                                    Buffer.from(decompiled),
+                                    { create: true, overwrite: true }
+                                );
+
+                                resolve({
+                                    code: code,
+                                    data: decompiled,
+                                    memFsPath: `decompileFs:/${path.basename(binaryPath)}.cpp`,
+                                    type: "single",
+                                    language: "cpp"
+                                });
+                            } else {
+                                reject({ code: code, type: "single" });
+                            }
+                            cleanupCallback();
+                        },
+                        OnStdOut: (data) => {
+                            console.log(data);
                         },
                         onStdErr: (data) => {
                             data = `${data}`;
@@ -411,6 +498,9 @@ class DecompileCtrl {
                 return Tools.jadxDecompile(uri.fsPath, progressCallback, this);
             default:
                 //assume binary?
+                if(settings.extensionConfig().default.decompiler.selected=="idaPro"){
+                    return Tools.idaDecompile(uri.fsPath, progressCallback, this);
+                }
                 return Tools.ghidraDecompile(uri.fsPath, progressCallback, this);
         }
     }

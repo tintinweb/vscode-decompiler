@@ -2,7 +2,7 @@
     "name": "vscode-decompiler",
     "displayName": "Decompiler",
     "description": "Decompile the $h*! out of things",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "keywords": [
         "security",
         "decompile",

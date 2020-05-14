@@ -2,7 +2,7 @@
     "name": "vscode-decompiler",
     "displayName": "Decompiler",
     "description": "Decompile the $h*! out of things",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "keywords": [
         "security",
         "decompile",
@@ -41,6 +41,7 @@
     "main": "./src/extension.js",
     "activationEvents": [
         "onFileSystem:decompileFs",
+        "onCommand:vscode-decompiler.decompile",
         "*"
     ],
     "contributes": {
@@ -59,6 +60,11 @@
                     "type": "string",
                     "default": "",
                     "description": "Path to ghidra/support/analyzeHeadless executable"
+                },
+                "vscode-decompiler.tool.idaPro.path": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to IDA/idaw.exe executable"
                 },
                 "vscode-decompiler.tool.jdcli.path": {
                     "type": "string",
@@ -92,6 +98,15 @@
                     ],
                     "default": "jd-cli",
                     "description": "Select the Java decompiler of preference"
+                },
+                "vscode-decompiler.default.decompiler.selected": {
+                    "type": "string",
+                    "enum": [
+                        "ghidra",
+                        "idaPro (experimental Windows Only)"
+                    ],
+                    "default": "ghidra",
+                    "description": "Select the default decompiler of preference"
                 }
             }
         },

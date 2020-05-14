@@ -64,7 +64,7 @@
                 "vscode-decompiler.tool.idaPro.path": {
                     "type": "string",
                     "default": "",
-                    "description": "Path to ghidra/support/analyzeHeadless executable"
+                    "description": "Path to IDA/idaw.exe executable"
                 },
                 "vscode-decompiler.tool.jdcli.path": {
                     "type": "string",

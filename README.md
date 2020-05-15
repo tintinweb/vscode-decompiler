@@ -16,7 +16,7 @@ This extension can be used to decompile ...
 * <img width="16" alt="Screenshot 2020-05-13 at 14 10 09" src="https://user-images.githubusercontent.com/2865694/81810613-8a9a8d80-9523-11ea-9fd9-0c83274746d7.png"> Java Jar archives and compiled Classes
 * <img width="15" alt="Screenshot 2020-05-13 at 14 09 49" src="https://user-images.githubusercontent.com/2865694/81810616-8c645100-9523-11ea-9bd1-cfddde16a420.png"> Android APK's
 
-**MacOs**
+**macOS**
 
 ![vscode-decompiler](https://user-images.githubusercontent.com/2865694/81797377-faeae400-950e-11ea-9060-2712dbb4740f.gif)
 
@@ -33,9 +33,9 @@ Have phun 🙌
 
 ## Setup
 
-* Requires Java (11+) to be installed system-wide. Just install the latest JRE/JDK for your OS (e.g. openJDK).
+* Requires Java (11+) to be installed system-wide. Just install the latest JRE/JDK for your OS (e.g. OpenJDK, Oracle JDK).
 * Requires a working installation of [Ghidra](https://ghidra-sre.org/) (← Download) to decompile executables
-  * either available in `PATH` (like when you installe it with with `brew cask install ghidra` on os-x; or set-up manually)
+  * either available in `PATH` (like when you install it with `brew cask install ghidra` on os-x; or set-up manually)
   * otherwise please specify the path to the executable `<ghidra>/support/analyzeHeadless` in `code → preferences → settings: vscode-decompiler.tool.ghidra.path` and make sure that the `analyzeHeadless` script runs without errors (and is not prompting for the JDK Home 🤓). Here's a sample Ghidra config for Windows:
   ![ghidraconf](https://user-images.githubusercontent.com/2865694/81807509-7dc76b00-951e-11ea-99d7-359bd624cce5.png)
 * (Experimental; Windows Only) Optional a licensed version of [IDA Pro](https://www.hex-rays.com/products/decompiler/) with decompiler support.

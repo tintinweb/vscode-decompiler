@@ -20,7 +20,7 @@ This extension can be used to decompile ...
 
 ![vscode-decompiler](https://user-images.githubusercontent.com/2865694/81797377-faeae400-950e-11ea-9060-2712dbb4740f.gif)
 
-**Windows (Ghidra vs. IdaPro)**
+**Windows (Ghidra vs. IDAPro)**
 
 ![vscode-decompiler-idapro](https://user-images.githubusercontent.com/2865694/82062800-ee12ef80-96ca-11ea-8ef6-78920c012477.gif)
 

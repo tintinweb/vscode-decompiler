@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.0.3
+- updated: Readme / Screenshots
+
 ## 0.0.2
 - new: add experimental support for IDA Pro (Windows Only)
 

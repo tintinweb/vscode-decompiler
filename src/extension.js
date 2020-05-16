@@ -41,52 +41,52 @@ function onActivate(context) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand(
-            'vscode-decompiler.decompile',
-            (uri) => {
+            'vscode-decompiler.decompile', async (uriItem, multiSelectUriItems) => { 
+                multiSelectUriItems = multiSelectUriItems || [uriItem]; /* multiSelectUri contains uriItem if set */
+
                 if(!vscode.workspace.getWorkspaceFolder(vscode.Uri.parse("decompileFs:/"))){
                     console.log("isNotInitialized");
-                    context.workspaceState.update("vscodeDecompiler.pendingUri", `${uri};${Date.now()}`).then(() => {
-                        console.log(context.workspaceState.get("vscodeDecompiler.pendingUri", null));
+                    context.workspaceState.update("vscodeDecompiler.pendingUri", JSON.stringify({ts:Date.now(), items:multiSelectUriItems})).then(() => {
                         console.log("wait for reload...");
                         decompileCtrl.reveal();
                     });
                     return;
                 }
-                
-                decompileCtrl.showDecompileWithProgress(uri).then(ret => {
-                    if (ret.type == "single") {
-                        vscodeShowSingleFile(vscode.Uri.parse(ret.memFsPath))
-                        .then(
-                            result => {}, 
-                            error => {
+
+                multiSelectUriItems.forEach(async uri => {
+                    decompileCtrl.showDecompileWithProgress(uri).then(ret => {
+                        if (ret.type == "single") {
+                            vscodeShowSingleFile(vscode.Uri.parse(ret.memFsPath))
+                            .then(
+                                result => {}, 
+                                error => {
+                                    vscodeShowSingleFile({content: ret.data, language: ret.language});  //if this fails, show directly as new file
+                                })
+                            .catch(() => {
                                 vscodeShowSingleFile({content: ret.data, language: ret.language});  //if this fails, show directly as new file
-                            })
-                        .catch(() => {
-                            vscodeShowSingleFile({content: ret.data, language: ret.language});  //if this fails, show directly as new file
-                        });
+                            });
+    
+                        } else if (ret.type == "multi") {
+                            decompileCtrl.reveal(); //reveal memfs with contents
+                        } else {
+                            vscode.window.showErrorMessage("Failed to decompile file :/");
+                        }
+                    },
+                    error => {
+                        vscode.window.showErrorMessage(`Failed to run decompiliation command. Check your configuration. ${JSON.stringify(error)}`);
+                    });
 
-                    } else if (ret.type == "multi") {
-                        decompileCtrl.reveal(); //reveal memfs with contents
-                    } else {
-                        vscode.window.showErrorMessage("Failed to decompile file :/");
-                    }
-                },
-                error => {
-                    vscode.window.showErrorMessage(`Failed to run decompiliation command. Check your configuration. ${JSON.stringify(error)}`);
                 });
-            }
-        )
+        })
     );
-
-
-    const pendingUriTs = context.workspaceState.get("vscodeDecompiler.pendingUri", null);
-    if(pendingUriTs && pendingUriTs.length && `${pendingUriTs}`.includes(";")){
-        let [pendingUri, timestamp] = pendingUriTs.split(";");
-        context.workspaceState.update("vscodeDecompiler.pendingUri", "").then(() => {
-            if(Date.now() - parseInt(timestamp) <= 30 * 1000){
+    
+    const pendingUrisMemento = JSON.parse(context.workspaceState.get("vscodeDecompiler.pendingUri", "{}"));
+    if(pendingUrisMemento && pendingUrisMemento.ts && pendingUrisMemento.items.length){
+        context.workspaceState.update("vscodeDecompiler.pendingUri", "{}").then(() => {
+            if(Date.now() - pendingUrisMemento.ts <= 30 * 1000){
                 // 30sec grace period. ignore all other pendingUris
-                console.log("restarting decompile for: " + pendingUri);
-                vscode.commands.executeCommand("vscode-decompiler.decompile", vscode.Uri.parse(pendingUri));
+                console.log("restarting decompile for: " + pendingUrisMemento.items);
+                vscode.commands.executeCommand("vscode-decompiler.decompile", undefined ,pendingUrisMemento.items.map(u => new vscode.Uri(u)));
             }
         });
     }

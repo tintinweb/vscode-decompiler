@@ -7,19 +7,19 @@
  * */
 const vscode = require('vscode');
 const path = require('path');
-const { promisify } = require('util');
 const fs = require('fs');
-const readdir = promisify(fs.readdir);
-const stat = promisify(fs.stat);
 const tmp = require('tmp');
-const { spawn, spawnSync } = require('child_process');
+const { spawn } = require('child_process');
 const which = require('which');
 
-const settings = require('../settings');
+const { promisify } = require('util');
+const readdir = promisify(fs.readdir);
+const stat = promisify(fs.stat);
 
+const settings = require('../settings');
 const { DecompileMemFsProvider } = require('./fsProvider');
 
-function normalizePlatformUri(uriString){
+function normalizePlatformUri(uriString) {
     return uriString.replace(/\\/g, '/');
 }
 
@@ -55,11 +55,6 @@ function memFsFromFileSystem(memFs, anchor, srcPath) {
 
 class Tools {
 
-    static _checkCommand(command) {
-        return spawnSync(command, ["-v"]);
-
-    }
-
     static _exec(command, args, options) {
         const cmd = spawn(command, args, {
             stdio: options.stdio || ['ignore', options.onStdOut ? 'pipe' : 'ignore', options.onStdErr ? 'pipe' : 'ignore'],
@@ -80,24 +75,24 @@ class Tools {
             let toolpath = settings.extensionConfig().tool.ghidra.path;
 
             if (!toolpath) {
-                switch(process.platform){
-                    case "darwin": 
-                        let ghidraRun = which.sync('ghidraRun', {nothrow: true});
-                        if(ghidraRun){
+                switch (process.platform) {
+                    case "darwin":
+                        let ghidraRun = which.sync('ghidraRun', { nothrow: true });
+                        if (ghidraRun) {
                             toolpath = path.join(fs.realpathSync(ghidraRun), "../support/analyzeHeadless");
                             let cfg = settings.extensionConfig();
                             cfg.update("tool.ghidra.path", toolpath);
                             console.log("updated setting: vscode-decompiler.tool.ghidra.path");
                         }
-                        if(!toolpath){
-                            let brewAvailable = which.sync('brew', {nothrow: true});
-                            if(brewAvailable){
+                        if (!toolpath) {
+                            let brewAvailable = which.sync('brew', { nothrow: true });
+                            if (brewAvailable) {
                                 vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. Please run `brew cask install ghidra` or install it from the official website and configure the path in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`", "Install").then(choice => {
-                                    if(choice=="Install"){
+                                    if (choice == "Install") {
                                         vscode.window.showInformationMessage("Homebrew: Installing Ghidra... This can take some time...");
                                         Tools._exec("brew", ["cask", "install", "ghidra"], {
                                             onClose: (code) => {
-                                                if(code==0){
+                                                if (code == 0) {
                                                     vscode.window.showInformationMessage("Homebrew: Ghidra installed.");
                                                     vscode.commands.executeCommand("vscode-decompiler.decompile", vscode.Uri.parse(binaryPath)); // restart analysis
                                                 } else {
@@ -116,19 +111,19 @@ class Tools {
                     case "linux":
                     case "freebsd":
                     case "openbsd":
-                        ghidraRun = which.sync('ghidraRun', {nothrow: true});
-                        if(ghidraRun){
+                        ghidraRun = which.sync('ghidraRun', { nothrow: true });
+                        if (ghidraRun) {
                             toolpath = path.join(fs.realpathSync(ghidraRun), "../support/analyzeHeadless");
                             let cfg = settings.extensionConfig();
                             cfg.update("tool.ghidra.path", toolpath);
                             console.log("updated setting: vscode-decompiler.tool.ghidra.path");
                         }
-                        if(!toolpath){
+                        if (!toolpath) {
                             vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. please use your package manager or install it from the official website and configure the path to `<ghidra>/../support/analyzeHeadless` in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`");
                             return reject();
                         }
                         break;
-                    default: 
+                    default:
                         vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. please use your package manager or install it from the official website and configure the path to `<ghidra>/../support/analyzeHeadless.bat` in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`");
                         return reject();
                 }
@@ -163,8 +158,8 @@ class Tools {
                     {
                         onClose: (code) => {
                             if (code == 0) {
-                                if(!fs.existsSync(outputFilePath)){
-                                    return reject({err:"Output file not produced"});
+                                if (!fs.existsSync(outputFilePath)) {
+                                    return reject({ err: "Output file not produced" });
                                 }
                                 const decompiled = `/** 
 *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
@@ -225,7 +220,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                 if (err) throw err;
 
                 console.log('Project Directory: ', projectPath);
-                let outputFilePath = path.join(projectPath, `${path.basename(binaryPath, path.extname(binaryPath))}.c`)
+                let outputFilePath = path.join(projectPath, `${path.basename(binaryPath, path.extname(binaryPath))}.c`);
 
                 /** 
                  * 
@@ -241,11 +236,11 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                  */
 
                 //generate idaw candidates:
-                let toolpathOther = path.basename(toolpath).includes("64") ? toolpath.replace(/(ida.?)64(.*)/g,"$1$2"): toolpath.replace(/(ida.?)([^\d].*)/g,"$164$2");  //idaw.exe, idaw64.exe
+                let toolpathOther = path.basename(toolpath).includes("64") ? toolpath.replace(/(ida.?)64(.*)/g, "$1$2") : toolpath.replace(/(ida.?)([^\d].*)/g, "$164$2");  //idaw.exe, idaw64.exe
 
                 let scriptCmd = `${path.join(settings.extension().extensionPath, "scripts", "ida_batch_decompile.py")} -o\\"${projectPath}\\"`;
-                if(binaryPath.includes('"')){
-                    return reject({err:"Dangerous filename"}); //binarypath is quoted.
+                if (binaryPath.includes('"')) {
+                    return reject({ err: "Dangerous filename" }); //binarypath is quoted.
                 }
 
                 Tools._exec(toolpath,
@@ -259,8 +254,8 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                         shell: true, /* dangerous :/ filename may inject stuff? */
                         onClose: (code) => {
                             if (code == 0) {
-                                if(!fs.existsSync(outputFilePath)){
-                                    return reject({err:"Output file not produced"});
+                                if (!fs.existsSync(outputFilePath)) {
+                                    return reject({ err: "Output file not produced" });
                                 }
 
                                 const decompiled = `/** 
@@ -299,23 +294,23 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                         shell: true, /* dangerous :/ filename may inject stuff? */
                                         onClose: (code) => {
                                             if (code == 0) {
-                                                if(!fs.existsSync(outputFilePath)){
-                                                    return reject({err:"Output file not produced"});
+                                                if (!fs.existsSync(outputFilePath)) {
+                                                    return reject({ err: "Output file not produced" });
                                                 }
-                
+
                                                 const decompiled = `/** 
                 *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
                 *  Target:    ${binaryPath}
                 **/
                 
                 ${fs.readFileSync(outputFilePath, 'utf8')};`;
-                
+
                                                 ctrl.memFs.writeFile(
                                                     vscode.Uri.parse(`decompileFs:/${path.basename(binaryPath)}.cpp`),
                                                     Buffer.from(decompiled),
                                                     { create: true, overwrite: true }
                                                 );
-                
+
                                                 resolve({
                                                     code: code,
                                                     data: decompiled,
@@ -325,17 +320,14 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                                 });
                                             } else {
                                                 //try other idaw variant (idaw -> idaw64)
-                                                reject({type:"single", code:code, err:"Failed to run decompiler"})
-                                                
+                                                reject({ type: "single", code: code, err: "Failed to run decompiler" });
+
                                             }
                                             cleanupCallback();
                                         }
                                     }
                                 );
-
-                                //******************************* */
                             }
-                            
                         }
                     }
                 );
@@ -514,7 +506,7 @@ class DecompileCtrl {
                 console.log("User canceled the long running operation");
             });
 
-            if(!fs.existsSync(uri.fsPath)){
+            if (!fs.existsSync(uri.fsPath)) {
                 vscode.window.showErrorMessage(`Cannot decompile: ${uri.fsPath}. File does not exist.`);
                 return;
             }
@@ -539,24 +531,24 @@ class DecompileCtrl {
 
         switch (path.extname(uri.fsPath)) {
             case '.apk':
-                if(settings.extensionConfig().apk.decompiler.selected=="jd-cli"){
+                if (settings.extensionConfig().apk.decompiler.selected == "jd-cli") {
                     progressCallback({ message: "unpacking...", increment: 2 });
                     return Tools.dex2jarConvert(uri.fsPath).then(jarFile => {
                         progressCallback({ message: "decompiling classes... (this may take some time)", increment: 5 });
                         return Tools.jdcliDecompile(jarFile, progressCallback, this);
                     });
-                } 
+                }
                 //default: jadx
                 return Tools.jadxDecompile(uri.fsPath, progressCallback, this);
             case '.class':
             case '.jar':
-                if(settings.extensionConfig().java.decompiler.selected=="jd-cli"){
+                if (settings.extensionConfig().java.decompiler.selected == "jd-cli") {
                     return Tools.jdcliDecompile(uri.fsPath, progressCallback, this);
                 }
                 return Tools.jadxDecompile(uri.fsPath, progressCallback, this);
             default:
                 //assume binary?
-                if(settings.extensionConfig().default.decompiler.selected.includes("idaPro")){
+                if (settings.extensionConfig().default.decompiler.selected.includes("idaPro")) {
                     return Tools.idaDecompile(uri.fsPath, progressCallback, this);
                 }
                 return Tools.ghidraDecompile(uri.fsPath, progressCallback, this);

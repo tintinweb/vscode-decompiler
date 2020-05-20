@@ -80,15 +80,20 @@ function onActivate(context) {
         })
     );
     
-    const pendingUrisMemento = JSON.parse(context.workspaceState.get("vscodeDecompiler.pendingUri", "{}"));
-    if(pendingUrisMemento && pendingUrisMemento.ts && pendingUrisMemento.items.length){
-        context.workspaceState.update("vscodeDecompiler.pendingUri", "{}").then(() => {
-            if(Date.now() - pendingUrisMemento.ts <= 30 * 1000){
-                // 30sec grace period. ignore all other pendingUris
-                console.log("restarting decompile for: " + pendingUrisMemento.items);
-                vscode.commands.executeCommand("vscode-decompiler.decompile", undefined ,pendingUrisMemento.items.map(u => new vscode.Uri(u)));
-            }
-        });
+    try {
+        // let's make sure we do not bail if the workspacestate is corrupt. Just ignore it in this case.
+        const pendingUrisMemento = JSON.parse(context.workspaceState.get("vscodeDecompiler.pendingUri", "{}") || "{}");
+        if(pendingUrisMemento && pendingUrisMemento.ts && pendingUrisMemento.items.length){
+            context.workspaceState.update("vscodeDecompiler.pendingUri", "{}").then(() => {
+                if(Date.now() - pendingUrisMemento.ts <= 30 * 1000){
+                    // 30sec grace period. ignore all other pendingUris
+                    console.log("restarting decompile for: " + pendingUrisMemento.items);
+                    vscode.commands.executeCommand("vscode-decompiler.decompile", undefined ,pendingUrisMemento.items.map(u => new vscode.Uri(u)));
+                }
+            });
+        }
+    } catch(err) {
+        console.warn(err);
     }
 }
 

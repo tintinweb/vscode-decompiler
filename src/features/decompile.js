@@ -299,11 +299,11 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                                 }
 
                                                 const decompiled = `/** 
-                *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
-                *  Target:    ${binaryPath}
-                **/
-                
-                ${fs.readFileSync(outputFilePath, 'utf8')};`;
+*  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
+*  Target:    ${binaryPath}
+**/
+
+${fs.readFileSync(outputFilePath, 'utf8')};`;
 
                                                 ctrl.memFs.writeFile(
                                                     vscode.Uri.parse(`decompileFs:/${path.basename(binaryPath)}.cpp`),

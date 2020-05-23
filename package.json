@@ -103,7 +103,8 @@
                     "type": "string",
                     "enum": [
                         "ghidra",
-                        "idaPro (experimental Windows Only)"
+                        "idaPro (experimental Windows Only)",
+                        "idaPro 6.6 legacy hexx-plugin (experimental Windows Only)"
                     ],
                     "default": "ghidra",
                     "description": "Select the default decompiler of preference"

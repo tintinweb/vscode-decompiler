@@ -261,14 +261,26 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                 if (binaryPath.includes('"')) {
                     return reject({ err: "Dangerous filename" }); //binarypath is quoted.
                 }
-
-                Tools._exec(toolpath,
-                    [
-                        '-A', '-B', "-M",
-                        `-o"${projectPath}"`,
-                        `-S"${scriptCmd}"`,
+                let idaArgs = [
+                    '-A', '-B', "-M",
+                    `-o"${projectPath}"`,
+                    `-S"${scriptCmd}"`,
+                    `"${binaryPath}"`
+                ]
+                if(settings.extensionConfig().default.decompiler.selected.includes("idaPro 6.6 legacy hexx-plugin")){
+                    // legacy idaPro Method (ida 6.6 hexx plugin)
+                    // idaw64.exe -A -Ohexx64:-new:output.cpp:ALL "calc.exe"
+                    idaArgs = [
+                        '-A', '-B', '-M',
+                        `Ohexx64:-new:${path.join(projectPath, path.basename(binaryPath)).replace(/\s/g, '_')}.cpp:ALL`,
                         `"${binaryPath}"`
-                    ],
+                    ];
+                    //removeME
+                    vscode.window.showWarningMessage(`DEBUG: idaw64.exe ${idaArgs.join(" ")}`);
+                }
+                
+                Tools._exec(toolpath,
+                    idaArgs,
                     {
                         shell: true, /* dangerous :/ filename may inject stuff? */
                         onClose: (code) => {
@@ -303,12 +315,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                 //******************************* UGLY COPY PASTA */
 
                                 Tools._exec(toolpathOther,
-                                    [
-                                        '-A', '-B', "-M",
-                                        `-o"${projectPath}"`,
-                                        `-S"${scriptCmd}"`,
-                                        `"${binaryPath}"`
-                                    ],
+                                    idaArgs,
                                     {
                                         shell: true, /* dangerous :/ filename may inject stuff? */
                                         onClose: (code) => {

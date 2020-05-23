@@ -15,6 +15,8 @@ This extension can be used to decompile ...
   * or [IDAPro](https://www.hex-rays.com/products/ida/processors/) (Experimental, Windows Only for now) 
 * <img width="16" alt="Screenshot 2020-05-13 at 14 10 09" src="https://user-images.githubusercontent.com/2865694/81810613-8a9a8d80-9523-11ea-9fd9-0c83274746d7.png"> Java Jar archives and compiled Classes
 * <img width="15" alt="Screenshot 2020-05-13 at 14 09 49" src="https://user-images.githubusercontent.com/2865694/81810616-8c645100-9523-11ea-9bd1-cfddde16a420.png"> Android APK's
+* <img width="15" alt="Screenshot 2020-05-13 at 14 09 49" src="https://user-images.githubusercontent.com/2865694/82730302-e7a1fa80-9cfe-11ea-9499-8cabe633a1d0.png"> Python `.pyc` and `.pyo`
+
 
 **macOS**
 
@@ -42,6 +44,7 @@ Have phun 🙌
   * specify the path to the `idaw` executable in `code → preferences → settings: vscode-decompiler.tool.idaPro.path`, e.g. `c:\IDA68\idaw.exe`.
   * set preference for `idaPro (experimental Windows Only)` in `code → preferences → settings: vscode-decompiler.default.decompiler.selected`.
   * we'll automatically try to run 32 and 64bits `idaw` on the target application (preference on what executable is configured by you)
+* Python decompilation requires `pip3 install uncompyle6`
 * Other tools are bundled with the extension. Just make sure Java is available in your `PATH`.
 
 ### Setting tool preferences
@@ -64,6 +67,7 @@ This extension wouldn't be possible without the smarties that are developing the
 * [JD-CLI](https://github.com/kwart/jd-cmd)
 * [dex2Jar](https://github.com/pxb1988/dex2jar)
 * [IDA Pro Advanced & Decompiler](https://www.hex-rays.com/products/decompiler/)
+* [python-uncompyle6](https://github.com/rocky/python-uncompyle6/)
 * LogoMakr (CC; Logo)
 
 ## Release Notes

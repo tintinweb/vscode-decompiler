@@ -81,6 +81,11 @@
                     "default": "",
                     "description": "Path to jadx executable"
                 },
+                "vscode-decompiler.tool.uncompyle.path": {
+                    "type": "string",
+                    "default": "uncompyle6",
+                    "description": "Path to uncompyle6 executable"
+                },
                 "vscode-decompiler.apk.decompiler.selected": {
                     "type": "string",
                     "enum": [

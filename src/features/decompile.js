@@ -58,7 +58,7 @@ class Tools {
     static _exec(command, args, options) {
 
         /** windows bugfix #6 - spaces in path */
-        let cwd = undefined;
+        let cwd;
         if(process.platform.startsWith("win")) {
             // node childprocess on windows is
             if(command.includes(" ") && fs.existsSync(command)){
@@ -176,7 +176,7 @@ class Tools {
                                 if (!fs.existsSync(outputFilePath)) {
                                     return reject({ err: "Output file not produced" });
                                 }
-                                const decompiled = `/** 
+                                let decompiled = `/** 
 *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
 *  Target:    ${binaryPath}
 **/
@@ -266,7 +266,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                     `-o"${projectPath}"`,
                     `-S"${scriptCmd}"`,
                     `"${binaryPath}"`
-                ]
+                ];
                 if(settings.extensionConfig().default.decompiler.selected.includes("idaPro 6.6 legacy hexx-plugin")){
                     // legacy idaPro Method (ida 6.6 hexx plugin)
                     // idaw64.exe -A -Ohexx64:-new:output.cpp:ALL "calc.exe"

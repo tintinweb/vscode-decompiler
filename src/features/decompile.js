@@ -56,9 +56,24 @@ function memFsFromFileSystem(memFs, anchor, srcPath) {
 class Tools {
 
     static _exec(command, args, options) {
+
+        /** windows bugfix #6 - spaces in path */
+        let cwd = undefined;
+        if(process.platform.startsWith("win")) {
+            // node childprocess on windows is
+            if(command.includes(" ") && fs.existsSync(command)){
+                //space in path & realpath -> cwd to command and just call it from there..
+                cwd = path.dirname(command);
+                command = path.basename(command);
+            }
+            
+        }
+        /** /windows bugfix #6 */
+
         const cmd = spawn(command, args, {
             stdio: options.stdio || ['ignore', options.onStdOut ? 'pipe' : 'ignore', options.onStdErr ? 'pipe' : 'ignore'],
-            shell: options.shell
+            shell: options.shell,
+            cwd: cwd
         });
         if (options.onClose) {
             cmd.on('close', options.onClose);
@@ -167,6 +182,10 @@ class Tools {
 **/
 
 ${fs.readFileSync(outputFilePath, 'utf8')};`;
+
+                                if(process.platform.startsWith("win")){
+                                    decompiled = decompiled.replace(/\r\n/g,'\n'); //fix mixed line-endings
+                                }
 
                                 ctrl.memFs.writeFile(
                                     vscode.Uri.parse(`decompileFs:/${path.basename(binaryPath)}.cpp`),

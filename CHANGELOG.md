@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.0.6
+- new: added support for decompiling Python `.pyc` and `.pyo`
+
 ## 0.0.5
 - fix: ignore corrupt workspace-state
   - when we load the sub-workspace vscode forcefully reloads the extension. To avoid any inconvenience e.g. because calling "decompile" appears to have no action we replay that command once we're reloaded. that command is stored in the workspace for 30secs (file to be decompiled on reload).

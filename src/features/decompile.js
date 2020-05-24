@@ -514,7 +514,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
         });
     }
 
-    static pythonDecompile(binaryPath, progressCallback, ctrl) {
+    static pythonDecompile(binaryPath, progressCallback, ctrl, token) {
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.uncompyle.path;
 
@@ -538,7 +538,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                  * [uncompyle6, -d out, input.pyc/pyo]
                  */
 
-                Tools._exec(toolpath, ["-o", projectPath, binaryPath],
+                let cmd = Tools._exec(toolpath, ["-o", projectPath, binaryPath],
                     {
                         onClose: (code) => {
                             if (code == 0) {
@@ -584,6 +584,10 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                         }
                     }
                 );
+                token.onCancellationRequested(() => {
+                    cmd.kill("SIGKILL");
+                    console.log(`${cmd.pid} - process killed - ${cmd.killed}`);
+                });
             });
         });
     }
@@ -649,7 +653,7 @@ class DecompileCtrl {
                 return Tools.jadxDecompile(uri.fsPath, progressCallback, this, token);
             case '.pyo':
             case '.pyc':
-                return Tools.pythonDecompile(uri.fsPath, progressCallback, this);
+                return Tools.pythonDecompile(uri.fsPath, progressCallback, this, token);
             default:
                 //assume binary?
                 if (settings.extensionConfig().default.decompiler.selected.includes("idaPro")) {

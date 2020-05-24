@@ -2,6 +2,8 @@
 
 ## 0.0.6
 - new: added support for decompiling Python `.pyc` and `.pyo`
+- fixed: generator tag indentation for idapro
+- fixed: cancel button has no effect (partially fixed as we do not killtree the proc)
 
 ## 0.0.5
 - fix: ignore corrupt workspace-state

@@ -278,6 +278,11 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
 
                 let cwd;  //legacy mode might have to cwd to target folder; otherwise we only cwd on windows when toolpath contains a space; cannot have both.
                 if(settings.extensionConfig().default.decompiler.selected.includes("idaPro legacy hexx-plugin")){
+                    // cannot work with IDAPro in a path with spaces :/
+                    if(toolpath.includes(" ") && fs.existsSync(toolpath)){
+                        vscode.showErrorMessage("This mode does not support IDA being in a location that contains spaces :/ Move IDA to another location or try the other ida mode.");
+                        return reject({ err: "Incompatible IDA installation path for 'idaPro legacy hexx-plugin' mode." });
+                    } 
                     // legacy idaPro Method (ida 6.6 hexx plugin)
                     // idaw64.exe -A -M -Ohexx64:-new:calc.exe.cpp:ALL "c:\temp\IDA_6.6\test\calc.exe"
                     // idaw.exe -A -M -Ohexrays:....

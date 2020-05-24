@@ -244,7 +244,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                 if (err) throw err;
 
                 console.log('Project Directory: ', projectPath);
-                let outputFilePath = path.join(projectPath, `${path.basename(binaryPath, path.extname(binaryPath))}.cpp`);
+                let outputFilePath = path.join(projectPath, `${path.basename(binaryPath, path.extname(binaryPath))}.c`);
                 /** 
                  * 
                  * decompile
@@ -273,7 +273,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                     `"${binaryPath}"`
                 ];
                 let cwd;  //legacy mode might have to cwd to target folder; otherwise we only cwd on windows when toolpath contains a space; cannot have both.
-                if(settings.extensionConfig().default.decompiler.selected.includes("idaPro 6.6 legacy hexx-plugin")){
+                if(settings.extensionConfig().default.decompiler.selected.includes("idaPro legacy hexx-plugin")){
                     // legacy idaPro Method (ida 6.6 hexx plugin)
                     // idaw64.exe -A -M -Ohexx64:-new:calc.exe.cpp:ALL "c:\temp\IDA_6.6\test\calc.exe"
                     outputFilePath = path.join(path.dirname(outputFilePath), path.basename(outputFilePath).replace(/\s/g, '_'));
@@ -283,8 +283,6 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                         `"${binaryPath}"`
                     ];
                     cwd =  projectPath; // cwd to target file as we cannot provide a fullpath as an arg to -new:<fname> :/
-                    //removeME
-                    vscode.window.showWarningMessage(`DEBUG: idaw64.exe ${idaArgs.join(" ")}`);
                 }
 
                 var cmd = Tools._exec(toolpath,

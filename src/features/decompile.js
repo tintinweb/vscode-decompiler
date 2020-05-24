@@ -259,8 +259,9 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                  */
 
                 //generate idaw candidates:
-                let toolpathOther = path.basename(toolpath).includes("64") ? toolpath.replace(/(ida.?)64(.*)/g, "$1$2") : toolpath.replace(/(ida.?)([^\d].*)/g, "$164$2");  //idaw.exe, idaw64.exe
-
+                let toolpathIs64bit = path.basename(toolpath).includes("64") 
+                let toolpathOther = toolpathIs64bit ? toolpath.replace(/(ida.?)64(.*)/g, "$1$2") : toolpath.replace(/(ida.?)([^\d].*)/g, "$164$2");  //idaw.exe, idaw64.exe
+                
                 let scriptCmd = `${path.join(settings.extension().extensionPath, "scripts", "ida_batch_decompile.py")} -o\\"${projectPath}\\"`;
                 if (binaryPath.includes('"')) {
                     return reject({ err: "Dangerous filename" }); //binarypath is quoted.
@@ -272,21 +273,30 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                     `-S"${scriptCmd}"`,
                     `"${binaryPath}"`
                 ];
+
+                let idaArgs32 = idaArgs;
+
                 let cwd;  //legacy mode might have to cwd to target folder; otherwise we only cwd on windows when toolpath contains a space; cannot have both.
                 if(settings.extensionConfig().default.decompiler.selected.includes("idaPro legacy hexx-plugin")){
                     // legacy idaPro Method (ida 6.6 hexx plugin)
                     // idaw64.exe -A -M -Ohexx64:-new:calc.exe.cpp:ALL "c:\temp\IDA_6.6\test\calc.exe"
+                    // idaw.exe -A -M -Ohexrays:....
                     outputFilePath = path.join(path.dirname(outputFilePath), path.basename(outputFilePath).replace(/\s/g, '_'));
                     idaArgs = [
                         '-A', '-M',
                         `-Ohexx64:-new:${path.basename(outputFilePath)}:ALL`,
                         `"${binaryPath}"`
                     ];
+                    idaArgs32 = [
+                        '-A', '-M',
+                        `-Ohexrays:-new:${path.basename(outputFilePath)}:ALL`,  // thank you hexrays ;)
+                        `"${binaryPath}"`
+                    ];
                     cwd =  projectPath; // cwd to target file as we cannot provide a fullpath as an arg to -new:<fname> :/
                 }
 
                 var cmd = Tools._exec(toolpath,
-                    idaArgs,
+                    toolpathIs64bit ? idaArgs : idaArgs32,
                     {
                         shell: true, /* dangerous :/ filename may inject stuff? */
                         onClose: (code) => {
@@ -321,7 +331,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                 //******************************* UGLY COPY PASTA */
 
                                 cmd = Tools._exec(toolpathOther,
-                                    idaArgs,
+                                    toolpathIs64bit ? idaArgs : idaArgs32,
                                     {
                                         shell: true, /* dangerous :/ filename may inject stuff? */
                                         onClose: (code) => {

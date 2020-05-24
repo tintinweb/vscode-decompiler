@@ -280,7 +280,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                 if(settings.extensionConfig().default.decompiler.selected.includes("idaPro legacy hexx-plugin")){
                     // cannot work with IDAPro in a path with spaces :/
                     if(toolpath.includes(" ") && fs.existsSync(toolpath)){
-                        vscode.showErrorMessage("This mode does not support IDA being in a location that contains spaces :/ Move IDA to another location (no spaces in path), make it available in PATH or configure another decompilation mode in `vscode-decompiler.default.decompiler.selected`.");
+                        vscode.window.showErrorMessage("This mode does not support IDA being in a location that contains spaces :/ Move IDA to another location (no spaces in path), make it available in PATH or configure another decompilation mode in `vscode-decompiler.default.decompiler.selected`.");
                         return reject({ err: "Incompatible IDA installation path for 'idaPro legacy hexx-plugin' mode." });
                     } 
                     // legacy idaPro Method (ida 6.6 hexx plugin)

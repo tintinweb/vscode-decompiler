@@ -59,14 +59,13 @@ class Tools {
 
 
         /** windows bugfix #6 - spaces in path */
-        let cwd;
-        if(process.platform.startsWith("win")) {
+        if(!options.cwd && process.platform.startsWith("win")) {
             // node childprocess on windows is a mess. executing .bat files auto-spawns a shell and messes up args provided in the array?!
             // therefore we cwd to the toolpath first and exec the command from there. 
             // note: spawns shell -> insecure.
             if(command.includes(" ") && fs.existsSync(command)){
                 //space in path & realpath -> cwd to command and just call it from there..
-                cwd = path.dirname(command);
+                options.cwd = path.dirname(command);
                 command = path.basename(command);
             }
         }
@@ -74,7 +73,7 @@ class Tools {
         const cmd = spawn(command, args, {
             stdio: options.stdio || ['ignore', options.onStdOut ? 'pipe' : 'ignore', options.onStdErr ? 'pipe' : 'ignore'],
             shell: options.shell,
-            cwd: cwd
+            cwd: options.cwd
         });
         if (options.onClose) {
             cmd.on('close', options.onClose);
@@ -245,8 +244,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                 if (err) throw err;
 
                 console.log('Project Directory: ', projectPath);
-                let outputFilePath = path.join(projectPath, `${path.basename(binaryPath, path.extname(binaryPath))}.c`);
-
+                let outputFilePath = path.join(projectPath, `${path.basename(binaryPath, path.extname(binaryPath))}.cpp`);
                 /** 
                  * 
                  * decompile
@@ -268,13 +266,29 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                     return reject({ err: "Dangerous filename" }); //binarypath is quoted.
                 }
 
-                var cmd = Tools._exec(toolpath,
-                    [
-                        '-A', '-B', "-M",
-                        `-o"${projectPath}"`,
-                        `-S"${scriptCmd}"`,
+                let idaArgs = [
+                    '-A', '-B', "-M",
+                    `-o"${projectPath}"`,
+                    `-S"${scriptCmd}"`,
+                    `"${binaryPath}"`
+                ];
+                let cwd;  //legacy mode might have to cwd to target folder; otherwise we only cwd on windows when toolpath contains a space; cannot have both.
+                if(settings.extensionConfig().default.decompiler.selected.includes("idaPro 6.6 legacy hexx-plugin")){
+                    // legacy idaPro Method (ida 6.6 hexx plugin)
+                    // idaw64.exe -A -M -Ohexx64:-new:calc.exe.cpp:ALL "c:\temp\IDA_6.6\test\calc.exe"
+                    outputFilePath = path.join(path.dirname(outputFilePath), path.basename(outputFilePath).replace(/\s/g, '_'));
+                    idaArgs = [
+                        '-A', '-M',
+                        `-Ohexx64:-new:${path.basename(outputFilePath)}:ALL`,
                         `"${binaryPath}"`
-                    ],
+                    ];
+                    cwd =  projectPath; // cwd to target file as we cannot provide a fullpath as an arg to -new:<fname> :/
+                    //removeME
+                    vscode.window.showWarningMessage(`DEBUG: idaw64.exe ${idaArgs.join(" ")}`);
+                }
+
+                var cmd = Tools._exec(toolpath,
+                    idaArgs,
                     {
                         shell: true, /* dangerous :/ filename may inject stuff? */
                         onClose: (code) => {
@@ -309,12 +323,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                 //******************************* UGLY COPY PASTA */
 
                                 cmd = Tools._exec(toolpathOther,
-                                    [
-                                        '-A', '-B', "-M",
-                                        `-o"${projectPath}"`,
-                                        `-S"${scriptCmd}"`,
-                                        `"${binaryPath}"`
-                                    ],
+                                    idaArgs,
                                     {
                                         shell: true, /* dangerous :/ filename may inject stuff? */
                                         onClose: (code) => {

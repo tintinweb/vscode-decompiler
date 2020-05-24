@@ -4,6 +4,9 @@
 - new: added support for decompiling Python `.pyc` and `.pyo`
 - fixed: generator tag indentation for idapro
 - fixed: cancel button has no effect (partially fixed as we do not killtree the proc)
+- changed: disable readonly for decompiled source files
+- fixed: (windows) spaces in toolpath break invocation of decompiler
+- fixed: (windows) mixed line-endings when decompiling with ghidra on windows
 
 ## 0.0.5
 - fix: ignore corrupt workspace-state

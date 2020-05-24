@@ -27,7 +27,7 @@ function onActivate(context) {
             decompileCtrl.memFs,
             {
                 isCaseSensitive: true,
-                isReadonly: true
+                isReadonly: false
             }
         )
     );

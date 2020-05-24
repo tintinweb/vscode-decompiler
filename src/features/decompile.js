@@ -177,12 +177,16 @@ class Tools {
                                 if (!fs.existsSync(outputFilePath)) {
                                     return reject({ err: "Output file not produced" });
                                 }
-                                const decompiled = `/** 
+                                let decompiled = `/** 
 *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
 *  Target:    ${binaryPath}
 **/
 
 ${fs.readFileSync(outputFilePath, 'utf8')};`;
+
+                                if(process.platform.startsWith("win")){
+                                    decompiled = decompiled.replace(/\r\n/g,'\n'); //fix mixed line-endings
+                                }
 
                                 ctrl.memFs.writeFile(
                                     vscode.Uri.parse(`decompileFs:/${path.basename(binaryPath)}.cpp`),

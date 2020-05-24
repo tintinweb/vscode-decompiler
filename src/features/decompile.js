@@ -66,11 +66,11 @@ class Tools {
         }
         if (options.onStdOut) cmd.stdout.on('data', options.onStdOut);
         if (options.onStdErr) cmd.stderr.on('data', options.onStdErr);
-
+        
         return cmd;
     }
 
-    static ghidraDecompile(binaryPath, progressCallback, ctrl) {
+    static ghidraDecompile(binaryPath, progressCallback, ctrl, token) {
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.ghidra.path;
 
@@ -148,7 +148,7 @@ class Tools {
                  * decompile
                  * 
                  */
-                Tools._exec(toolpath,
+                let cmd = Tools._exec(toolpath,
                     [projectPath, "vscode-decompiler",
                         "-import", `${binaryPath}`,
                         "-scriptPath", `${path.join(settings.extension().extensionPath, "scripts")}`,
@@ -195,11 +195,16 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                         }
                     }
                 );
+
+                token.onCancellationRequested(() => {
+                    cmd.kill("SIGKILL");
+                    console.log(`${cmd.pid} - process killed - ${cmd.killed}`);
+                });
             });
         });
     }
 
-    static idaDecompile(binaryPath, progressCallback, ctrl) {
+    static idaDecompile(binaryPath, progressCallback, ctrl, token) {
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.idaPro.path;
 
@@ -243,7 +248,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                     return reject({ err: "Dangerous filename" }); //binarypath is quoted.
                 }
 
-                Tools._exec(toolpath,
+                var cmd = Tools._exec(toolpath,
                     [
                         '-A', '-B', "-M",
                         `-o"${projectPath}"`,
@@ -283,7 +288,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                 //try other idaw variant (idaw -> idaw64)
                                 //******************************* UGLY COPY PASTA */
 
-                                Tools._exec(toolpathOther,
+                                cmd = Tools._exec(toolpathOther,
                                     [
                                         '-A', '-B', "-M",
                                         `-o"${projectPath}"`,
@@ -327,15 +332,24 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                         }
                                     }
                                 );
+                                token.onCancellationRequested(() => {
+                                    cmd.kill("SIGKILL");
+                                    console.log(`${cmd.pid} - process killed - ${cmd.killed}`);
+                                });
                             }
                         }
                     }
                 );
+
+                token.onCancellationRequested(() => {
+                    cmd.kill("SIGKILL");
+                    console.log(`${cmd.pid} - process killed - ${cmd.killed}`);
+                });
             });
         });
     }
 
-    static jdcliDecompile(binaryPath, progressCallback, ctrl) {
+    static jdcliDecompile(binaryPath, progressCallback, ctrl, token) {
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.jdcli.path;
 
@@ -362,7 +376,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                  * 
                  * [JdCli._get_command(), '--outputDir', destination, source]
                  */
-                Tools._exec(toolpath, ["--outputDir", projectPath, binaryPath],
+                let cmd = Tools._exec(toolpath, ["--outputDir", projectPath, binaryPath],
                     {
                         onClose: (code) => {
                             if (code == 0) {
@@ -390,6 +404,12 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                         }
                     }
                 );
+
+                token.onCancellationRequested(() => {
+                    cmd.kill("SIGKILL");
+                    console.log(`${cmd.pid} - process killed - ${cmd.killed}`);
+                });
+
             });
         });
     }
@@ -430,7 +450,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
         });
     }
 
-    static jadxDecompile(binaryPath, progressCallback, ctrl) {
+    static jadxDecompile(binaryPath, progressCallback, ctrl, token) {
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.jadx.path;
 
@@ -457,7 +477,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                  * 
                  * [jadx, -d out, input.dex]
                  */
-                Tools._exec(toolpath, ["-d", projectPath, binaryPath],
+                let cmd = Tools._exec(toolpath, ["-d", projectPath, binaryPath],
                     {
                         onClose: (code) => {
                             if (code == 0) {
@@ -485,6 +505,11 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                         }
                     }
                 );
+
+                token.onCancellationRequested(() => {
+                    cmd.kill("SIGKILL");
+                    console.log(`${cmd.pid} - process killed - ${cmd.killed}`);
+                });
             });
         });
     }
@@ -587,21 +612,23 @@ class DecompileCtrl {
 
             progress.report({ increment: 0 });
 
-            return this.decompile(uri, (msg) => {
+            return this.decompile(
+                uri, 
+                (msg) => {
+                    if (Array.isArray(msg) && msg.length == 3) {
+                        progress.report({ message: `${msg[2]} (${msg[0]}/${msg[1]})`, increment: 100 / parseInt(msg[1]) });
+                    }
+                    else if ((!!msg) && (msg.constructor === Object)) {
+                        //object
+                        progress.report(msg);
+                    }
 
-                if (Array.isArray(msg) && msg.length == 3) {
-                    progress.report({ message: `${msg[2]} (${msg[0]}/${msg[1]})`, increment: 100 / parseInt(msg[1]) });
-                }
-                else if ((!!msg) && (msg.constructor === Object)) {
-                    //object
-                    progress.report(msg);
-                }
-
-            });
+                },
+                token);
         });
     }
 
-    decompile(uri, progressCallback) {
+    decompile(uri, progressCallback, token) {
 
         switch (path.extname(uri.fsPath)) {
             case '.apk':
@@ -609,26 +636,26 @@ class DecompileCtrl {
                     progressCallback({ message: "unpacking...", increment: 2 });
                     return Tools.dex2jarConvert(uri.fsPath).then(jarFile => {
                         progressCallback({ message: "decompiling classes... (this may take some time)", increment: 5 });
-                        return Tools.jdcliDecompile(jarFile, progressCallback, this);
+                        return Tools.jdcliDecompile(jarFile, progressCallback, this, token);
                     });
                 }
                 //default: jadx
-                return Tools.jadxDecompile(uri.fsPath, progressCallback, this);
+                return Tools.jadxDecompile(uri.fsPath, progressCallback, this, token);
             case '.class':
             case '.jar':
                 if (settings.extensionConfig().java.decompiler.selected == "jd-cli") {
-                    return Tools.jdcliDecompile(uri.fsPath, progressCallback, this);
+                    return Tools.jdcliDecompile(uri.fsPath, progressCallback, this, token);
                 }
-                return Tools.jadxDecompile(uri.fsPath, progressCallback, this);
+                return Tools.jadxDecompile(uri.fsPath, progressCallback, this, token);
             case '.pyo':
             case '.pyc':
                 return Tools.pythonDecompile(uri.fsPath, progressCallback, this);
             default:
                 //assume binary?
                 if (settings.extensionConfig().default.decompiler.selected.includes("idaPro")) {
-                    return Tools.idaDecompile(uri.fsPath, progressCallback, this);
+                    return Tools.idaDecompile(uri.fsPath, progressCallback, this, token);
                 }
-                return Tools.ghidraDecompile(uri.fsPath, progressCallback, this);
+                return Tools.ghidraDecompile(uri.fsPath, progressCallback, this, token);
         }
     }
 

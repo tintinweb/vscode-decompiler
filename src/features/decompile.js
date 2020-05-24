@@ -298,6 +298,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                 var cmd = Tools._exec(toolpath,
                     toolpathIs64bit ? idaArgs : idaArgs32,
                     {
+                        cwd: cwd,
                         shell: true, /* dangerous :/ filename may inject stuff? */
                         onClose: (code) => {
                             if (code == 0) {
@@ -331,8 +332,9 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                 //******************************* UGLY COPY PASTA */
 
                                 cmd = Tools._exec(toolpathOther,
-                                    toolpathIs64bit ? idaArgs : idaArgs32,
+                                    toolpathIs64bit == false ? idaArgs : idaArgs32,
                                     {
+                                        cwd: cwd,
                                         shell: true, /* dangerous :/ filename may inject stuff? */
                                         onClose: (code) => {
                                             if (code == 0) {

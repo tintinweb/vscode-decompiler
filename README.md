@@ -6,7 +6,7 @@
 
 # Decompiler!
 
-Let's be honest, there is no reason to remember how to decompile stuff with the various tools available. Wouldn't it be nice to just decompile the $h*! out of things right off the fingertips in visual studio code? Well, here we go:
+Let's be honest, there is no reason to remember how to decompile stuff with the various tools available. Wouldn't it be nice to just decompile the $h*! out of things right off the fingertips in Visual Studio Code? Well, here we go:
 
 This extension can be used to decompile ...
 

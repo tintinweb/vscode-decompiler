@@ -17,6 +17,11 @@ This extension can be used to decompile ...
 * <img width="15" alt="Screenshot 2020-05-13 at 14 09 49" src="https://user-images.githubusercontent.com/2865694/81810616-8c645100-9523-11ea-9bd1-cfddde16a420.png"> Android APK's
 * <img width="15" alt="Screenshot 2020-05-13 at 14 09 49" src="https://user-images.githubusercontent.com/2865694/82730302-e7a1fa80-9cfe-11ea-9499-8cabe633a1d0.png"> Python `.pyc` and `.pyo`
 
+Just `right-click → Decompile` on a supported executable and wait for the magic to happen.
+
+The decompilation result is added to a temporary sub-workspace. You can `right-click → Download` files to your local file-system right from the sub-workspace.
+
+Have phun 🙌
 
 **macOS**
 
@@ -25,12 +30,6 @@ This extension can be used to decompile ...
 **Windows (Ghidra vs. IDAPro)**
 
 ![vscode-decompiler-idapro](https://user-images.githubusercontent.com/2865694/82062800-ee12ef80-96ca-11ea-8ef6-78920c012477.gif)
-
-Just `right-click → Decompile` on a supported executable and wait for the magic to happen.
-
-The decompilation result is added to a temporary sub-workspace. You can `right-click → Download` files to your local file-system right from the sub-workspace.
-
-Have phun 🙌
 
 
 ## Setup

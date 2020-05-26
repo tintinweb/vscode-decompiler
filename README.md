@@ -6,7 +6,7 @@
 
 # Decompiler!
 
-Let's be honest, there is no reason to remember how to decompile stuff with the various tools available. Wouldn't it be nice to be able to decompile the $h*! out of things right off the fingertips in visual studio code? Well, here we go. 
+Let's be honest, there is no reason to remember how to decompile stuff with the various tools available. Wouldn't it be nice to just decompile the $h*! out of things right off the fingertips in visual studio code? Well, here we go:
 
 This extension can be used to decompile ...
 
@@ -22,6 +22,8 @@ Just `right-click → Decompile` on a supported executable and wait for the magi
 The decompilation result is added to a temporary sub-workspace. You can `right-click → Download` files to your local file-system right from the sub-workspace.
 
 Have phun 🙌
+
+## Tour
 
 **macOS**
 
@@ -41,9 +43,10 @@ Have phun 🙌
   ![ghidraconf](https://user-images.githubusercontent.com/2865694/81807509-7dc76b00-951e-11ea-99d7-359bd624cce5.png)
 * (Experimental; Windows Only) Optional a licensed version of [IDA Pro](https://www.hex-rays.com/products/decompiler/) with decompiler support.
   * specify the path to the `idaw` executable in `code → preferences → settings: vscode-decompiler.tool.idaPro.path`, e.g. `c:\IDA68\idaw.exe`.
-  * set preference for `idaPro (experimental Windows Only)` in `code → preferences → settings: vscode-decompiler.default.decompiler.selected`.
+  * set preference to `idaPro (experimental Windows Only)` in `code → preferences → settings: vscode-decompiler.default.decompiler.selected`.
   * we'll automatically try to run 32 and 64bits `idaw` on the target application (preference on what executable is configured by you)
-* Python decompilation requires `pip3 install uncompyle6`
+  * If you're running `<= IDA Pro 6.6` and the normal IDA decompilation mode does not work you can try the set preference to `idaPro legacy hexx-plugin (experimental Windows Only)` in `code → preferences → settings: vscode-decompiler.default.decompiler.selected`. Note: Use this method only if the normal IDA Pro mode doesnt work. Caveat: `idaw*.exe` must not be in a path that contains spaces, ask @microsoft why 😉.
+* Python decompilation requires `pip3 install uncompyle6` (see settings)
 * Other tools are bundled with the extension. Just make sure Java is available in your `PATH`.
 
 ### Setting tool preferences

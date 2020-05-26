@@ -2,12 +2,12 @@
 
 ## 0.0.6
 - new: added support for decompiling Python `.pyc` and `.pyo`
-- new: (windows) added support for legacy ida pro decompiler via hexx plugin (slow)
-- fixed: (windows) generator tag indentation for idapro
-- fixed: (windows) spaces in toolpath break invocation of decompiler
-- fixed: (windows) mixed line-endings when decompiling with ghidra on windows
-- fixed: cancel button has no effect (partially fixed as we do not killtree the proc)
-- changed: disable readonly for decompiled source files
+- new: (windows) added support for legacy ida pro decompiler via hexx plugin (ida <= 6.6)
+- fix: (windows) generator tag indentation for idapro
+- fix: (windows) spaces in toolpath break invocation of decompiler
+- fix: (windows) mixed line-endings when decompiling with ghidra on windows
+- fix: cancel button has no effect (only partially fixed, we do not killtree the proc)
+- updated: disable readonly mode for decompiled files
 
 
 ## 0.0.5

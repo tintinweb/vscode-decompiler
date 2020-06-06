@@ -3,7 +3,7 @@
  * @author github.com/tintinweb
  * @license MIT
  * 
- * 
+ * original source: https://github.com/microsoft/vscode-extension-samples/tree/master/fsprovider-sample
  * */
 const vscode = require('vscode');
 const path = require('path');

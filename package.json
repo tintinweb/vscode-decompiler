@@ -24,7 +24,9 @@
         "apk",
         "android",
         "jadx",
-        "dex"
+        "dex",
+        "evm",
+        "ethereum"
     ],
     "publisher": "tintinweb",
     "icon": "images/icon.png",

@@ -62,7 +62,7 @@ class EthereumEvmCmd extends BaseCommand {
 
                 let panoramixPy = path.join(settings.extension().extensionPath, "bundled_tools", "panoramix_a75744cc2e7d1ad4cb3514d172d1872233f645fd", "panoramix.py");
 
-                let cmd = BaseCommand._exec("/usr/local/opt/python@3.8/bin/python3.8", [panoramixPy, "stdin", "--fast"],
+                let cmd = BaseCommand._exec(toolpath, [panoramixPy, "stdin", "--fast"],
                     {
                         cwd: panoramixWorkDir,
                         shell: true,
@@ -102,7 +102,12 @@ class EthereumEvmCmd extends BaseCommand {
                                 });
                                 cleanupCallback();
                             } else {
-                                reject({ code: code, type: "multi", err: stderr.join('\n')});
+                                let stderrTxt = stderr.join('\n');
+                                if (stderrTxt.indexOf("ModuleNotFoundError:")){
+                                    reject({ code: code, type: "multi", errMsg: "Ethereum decompiler missing dependencies. Please follow README.md 'Requirements:Smart Contracts' to set up panoramix correctly and manually install its dependencies.", err: stderrTxt});
+                                } else {
+                                    reject({ code: code, type: "multi", err: stderrTxt});
+                                }
                             }
                             cleanupCallback();
                         },

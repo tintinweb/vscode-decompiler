@@ -93,7 +93,7 @@
                 },
                 "vscode-decompiler.tool.python38.path": {
                     "type": "string",
-                    "default": "python3.8",
+                    "default": "",
                     "description": "Path to python 3.8 executable required for some tools"
                 },
                 "vscode-decompiler.apk.decompiler.selected": {

@@ -8,12 +8,13 @@ Let's be honest, there is no reason to remember how to decompile stuff with the 
 
 This extension can be used to decompile ...
 
-* <img width="17" alt="Screenshot 2020-05-13 at 14 11 53" src="https://user-images.githubusercontent.com/2865694/81810700-b7e73b80-9523-11ea-9ed3-f52704689939.png"><img width="17" alt="Screenshot 2020-05-13 at 19 26 56" src="https://user-images.githubusercontent.com/2865694/81844741-d3683b80-954f-11ea-8d21-df843d1dc4df.png"> Binary executables for various platforms
+* <img width="17" alt="PE" src="https://user-images.githubusercontent.com/2865694/81810700-b7e73b80-9523-11ea-9ed3-f52704689939.png"><img width="17" alt="ELF/MACH" src="https://user-images.githubusercontent.com/2865694/81844741-d3683b80-954f-11ea-8d21-df843d1dc4df.png"> Binary executables for various platforms
     * as supported by [Ghidra](https://github.com/NationalSecurityAgency/ghidra/wiki/Frequently-asked-questions#what-processors-are-currently-supported); Windows PE, Linux ELF, IOS, etc..
     * or [IDAPro](https://www.hex-rays.com/products/ida/processors/) (Experimental, Windows Only for now)
-* <img width="16" alt="Screenshot 2020-05-13 at 14 10 09" src="https://user-images.githubusercontent.com/2865694/81810613-8a9a8d80-9523-11ea-9fd9-0c83274746d7.png"> Java Jar archives and compiled Classes
-* <img width="15" alt="Screenshot 2020-05-13 at 14 09 49" src="https://user-images.githubusercontent.com/2865694/81810616-8c645100-9523-11ea-9bd1-cfddde16a420.png"> Android APK's
-* <img width="15" alt="Screenshot 2020-05-13 at 14 09 49" src="https://user-images.githubusercontent.com/2865694/82730302-e7a1fa80-9cfe-11ea-9499-8cabe633a1d0.png"> Python `.pyc` and `.pyo`
+* <img width="16" alt="Jar" src="https://user-images.githubusercontent.com/2865694/81810613-8a9a8d80-9523-11ea-9fd9-0c83274746d7.png"> Java Jar archives and compiled Classes
+* <img width="15" alt="APK" src="https://user-images.githubusercontent.com/2865694/81810616-8c645100-9523-11ea-9bd1-cfddde16a420.png"> Android APK's
+* <img width="15" alt="PYC" src="https://user-images.githubusercontent.com/2865694/82730302-e7a1fa80-9cfe-11ea-9499-8cabe633a1d0.png"> Python `.pyc` and `.pyo`
+* <img width="15" alt="EVM" src="https://user-images.githubusercontent.com/2865694/84128845-702fd300-aa41-11ea-8202-d7bbb5fda19b.png"> Ethereum/EVM byte-code based Smart Contracts
 
 Just `right-click → Decompile` on a supported executable and wait for the magic to happen.
 

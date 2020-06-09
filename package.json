@@ -89,6 +89,11 @@
                     "default": "uncompyle6",
                     "description": "Path to uncompyle6 executable"
                 },
+                "vscode-decompiler.tool.python38.path": {
+                    "type": "string",
+                    "default": "python3.8",
+                    "description": "Path to python 3.8 executable required for some tools"
+                },
                 "vscode-decompiler.apk.decompiler.selected": {
                     "type": "string",
                     "enum": [

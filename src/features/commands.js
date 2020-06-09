@@ -10,6 +10,7 @@ const { DefaultCmd } = require('./commands/default');
 const { JavaCmd } = require('./commands/java');
 const { AndroidCmd } = require('./commands/android');
 const { PythonCmd } = require('./commands/python');
+const { EthereumEvmCmd } = require('./commands/ethereum');
 
 class CommandHandler {
 
@@ -18,7 +19,8 @@ class CommandHandler {
             new DefaultCmd(ctrl),
             new JavaCmd(ctrl),
             new AndroidCmd(ctrl),
-            new PythonCmd(ctrl)
+            new PythonCmd(ctrl),
+            new EthereumEvmCmd(ctrl)
         ];
         this.cmdForFileExtension = {};
 

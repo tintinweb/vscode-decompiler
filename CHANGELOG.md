@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.0.7
+* new: added support for decompiling Ethereum EVM byte-code
+* maintenance: refactored commands
+
 ## 0.0.6
 
 * new: added support for decompiling Python `.pyc` and `.pyo`

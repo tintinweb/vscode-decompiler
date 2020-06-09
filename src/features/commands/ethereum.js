@@ -29,6 +29,10 @@ class EthereumEvmCmd extends BaseCommand {
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.python38.path;
 
+            if(!toolpath){
+                return reject({ err: "Python3.8 not found. Please specify the path in `code → preferences → settings: vscode-decompiler.tool.python38.path`" });
+            }
+
             let panoramixWorkDir = path.join(require('os').homedir(), ".panoramix");
             if (!fs.existsSync(panoramixWorkDir)){
                 console.log("creating panoramix workdir: "+ panoramixWorkDir);
@@ -54,8 +58,11 @@ class EthereumEvmCmd extends BaseCommand {
                  */
 
                 let stdout = [];
+                let stderr = [];
 
-                let cmd = BaseCommand._exec("/usr/local/opt/python@3.8/bin/python3.8", ["/Users/tintin/workspace/python/panoramix/panoramix.py", "stdin", "--fast"],
+                let panoramixPy = path.join(settings.extension().extensionPath, "bundled_tools", "panoramix_a75744cc2e7d1ad4cb3514d172d1872233f645fd", "panoramix.py");
+
+                let cmd = BaseCommand._exec("/usr/local/opt/python@3.8/bin/python3.8", [panoramixPy, "stdin", "--fast"],
                     {
                         cwd: panoramixWorkDir,
                         shell: true,
@@ -95,13 +102,14 @@ class EthereumEvmCmd extends BaseCommand {
                                 });
                                 cleanupCallback();
                             } else {
-                                reject({ code: code, type: "multi" });
+                                reject({ code: code, type: "multi", err: stderr.join('\n')});
                             }
                             cleanupCallback();
                         },
                         onStdErr: (data) => {
                             data = `${data}`;
                             console.log(data);
+                            stderr.push(data);
                             if (progressCallback) {
                                 let funcnamePos = data.indexOf(" Parsing ");
                                 if(funcnamePos){

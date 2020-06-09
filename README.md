@@ -62,6 +62,20 @@ Have phun 🙌
 
 </details>
 
+
+<details>
+  <summary style='font-size:12pt'>Requirements: Smart Contracts (EVM byte-code)</summary>
+
+* The pseudocode generator [panoramix](https://github.com/eveem-org/panoramix)/[eveem](https://www.eveem.org/) requires a working installation of `python3.8`.
+  * specify the `python3.8` path in `code → preferences → settings: vscode-decompiler.tool.python38.path` (e.g. `/usr/local/opt/python@3.8/bin/python3.8` (macos/homebrew))
+  * make sure `pip` for `python3.8` is installed
+  * install `panoramix` dependencies: `$ /usr/local/opt/python@3.8/bin/python3.8 -m pip install coloredlogs requests web3 timeout_decorator ` 
+* Note: Panoramix is run in local mode. EVM byte-code is **not** sent to eveem.org.
+  * It will attempt to download a function signature database on first load.
+  * It will cache files to `<userhome>/.panoramix`.
+
+</details>
+
 <details>
   <summary style='font-size:12pt'>Setting tool preferences</summary>
 
@@ -86,6 +100,7 @@ This extension wouldn't be possible without the smarties that are developing the
 * [dex2Jar](https://github.com/pxb1988/dex2jar)
 * [IDA Pro Advanced & Decompiler](https://www.hex-rays.com/products/decompiler/)
 * [python-uncompyle6](https://github.com/rocky/python-uncompyle6/)
+* [panoramix](https://github.com/eveem-org/panoramix) the engine behind [eveem.org](https://www.eveem.org/)
 * LogoMakr (CC; Logo)
 
 ## Release Notes

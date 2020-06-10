@@ -2,7 +2,8 @@
 
 ## 0.0.7
 - new: added support for decompiling Ethereum EVM byte-code
-- maintenance: refactored commands
+- new: command `vscode-decompiler.decompileShowContent` that takes file content instead of file paths.
+- maintenance: refactored codebase
 
 ## 0.0.6
 - new: added support for decompiling Python `.pyc` and `.pyo`

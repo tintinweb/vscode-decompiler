@@ -47,6 +47,7 @@
     "activationEvents": [
         "onFileSystem:decompileFs",
         "onCommand:vscode-decompiler.decompile",
+        "onCommand:vscode-decompiler.decompileShowContent",
         "*"
     ],
     "contributes": {

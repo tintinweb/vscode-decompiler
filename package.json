@@ -55,6 +55,11 @@
                 "command": "vscode-decompiler.decompile",
                 "title": "Decompile",
                 "category": "Decompiler"
+            },
+            {
+                "command": "vscode-decompiler.decompileShowContent",
+                "title": "Decompile",
+                "category": "Decompiler"
             }
         ],
         "configuration": {

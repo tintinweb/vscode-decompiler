@@ -10,6 +10,10 @@
 const vscode = require("vscode");
 const { DecompileCtrl } = require('./features/decompile');
 
+const tmp = require('tmp');
+const fs = require('fs');
+const path = require('path');
+
 function vscodeShowSingleFile(options, where) {
     return vscode.workspace.openTextDocument(options).then(doc => {
         return vscode.window.showTextDocument(doc, where || vscode.ViewColumn.Active);
@@ -75,6 +79,26 @@ function onActivate(context) {
                             vscode.window.showErrorMessage(`Failed to run decompiliation command. Check your configuration. ${JSON.stringify(error)}`);
                         });
 
+                });
+            })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand(
+            'vscode-decompiler.decompileShowContent', async (filename, content) => {
+                if(!filename || filename.includes("/") || filename.includes("\\") || !content){
+                    throw "Invalid Filename. Please provide a filename not a Path";
+                }
+            
+                tmp.dir({unsafeCleanup: true}, (err, projectPath, cleanupCallback) => {
+                    if (err) throw err;
+
+                    let targetPath = path.join(projectPath, filename);
+                    fs.writeFile(targetPath, content, (err) => {
+                        if (err) throw err;
+                        vscode.commands.executeCommand("vscode-decompiler.decompile", vscode.Uri.file(targetPath));
+                        cleanupCallback();
+                    });
                 });
             })
     );

@@ -67,6 +67,7 @@ Have phun 🙌
   <summary style='font-size:12pt'><b>Requirements:</b> Python</summary>
 
 * Python decompilation requires `pip3 install uncompyle6` (see settings)
+  * specify the `uncompyle6` script location in `code → preferences → settings: vscode-decompiler.tool.uncompyle.path` or set to `uncompyle6` if it is available in `PATH`
 
 </details>
 
@@ -74,7 +75,7 @@ Have phun 🙌
 <details>
   <summary style='font-size:12pt'><b>Requirements:</b> Smart Contracts (EVM byte-code)</summary>
 
-* The pseudocode generator [panoramix](https://github.com/eveem-org/panoramix)/[eveem](https://www.eveem.org/) requires a working installation of `python3.8`.
+* The pseudocode generator [panoramix](https://github.com/eveem-org/panoramix)/[eveem](https://www.eveem.org/) requires a working installation of `python3.8` or newer.
   * specify the `python3.8` path in `code → preferences → settings: vscode-decompiler.tool.python38.path` (e.g. `/usr/local/opt/python@3.8/bin/python3.8` (macos/homebrew))
   * make sure `pip` for `python3.8` is installed
   * install `panoramix` dependencies: `$ /usr/local/opt/python@3.8/bin/python3.8 -m pip install coloredlogs requests web3 timeout_decorator ` 

@@ -2,7 +2,7 @@
     "name": "vscode-decompiler",
     "displayName": "Decompiler",
     "description": "Decompile the $h*! out of things",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "keywords": [
         "security",
         "decompile",
@@ -24,7 +24,9 @@
         "apk",
         "android",
         "jadx",
-        "dex"
+        "dex",
+        "evm",
+        "ethereum"
     ],
     "publisher": "tintinweb",
     "icon": "images/icon.png",
@@ -51,6 +53,11 @@
         "commands": [
             {
                 "command": "vscode-decompiler.decompile",
+                "title": "Decompile",
+                "category": "Decompiler"
+            },
+            {
+                "command": "vscode-decompiler.decompileShowContent",
                 "title": "Decompile",
                 "category": "Decompiler"
             }
@@ -88,6 +95,11 @@
                     "type": "string",
                     "default": "uncompyle6",
                     "description": "Path to uncompyle6 executable"
+                },
+                "vscode-decompiler.tool.python38.path": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to python 3.8 executable required for some tools"
                 },
                 "vscode-decompiler.apk.decompiler.selected": {
                     "type": "string",

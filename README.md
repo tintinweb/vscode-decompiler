@@ -37,6 +37,8 @@ Have phun 🙌
 
 **Ethereum Smart Contract**
 
+Save the `EVM` byte-code in a file with extension `.evm`, then `right-click → Decompile`.
+
 ![vscode-decompiler-evm-1](https://user-images.githubusercontent.com/2865694/84135961-eb49b700-aa4a-11ea-9d9c-f329f7400ef0.gif)
 
 

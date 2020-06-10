@@ -81,6 +81,8 @@ class EthereumEvmCmd extends BaseCommand {
 /*
 *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
 *  Target:    ${binaryPath}
+*
+*  Engine: https://github.com/eveem-org/panoramix by @Tomasz Kolinko
 **/
 '''
 

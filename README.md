@@ -16,7 +16,8 @@ This extension decompiles ...
 * <img width="16" alt="Jar" src="https://user-images.githubusercontent.com/2865694/81810613-8a9a8d80-9523-11ea-9fd9-0c83274746d7.png"> Java Jar archives and compiled Classes
 * <img width="15" alt="APK" src="https://user-images.githubusercontent.com/2865694/81810616-8c645100-9523-11ea-9bd1-cfddde16a420.png"> Android APK's
 * <img width="15" alt="PYC" src="https://user-images.githubusercontent.com/2865694/82730302-e7a1fa80-9cfe-11ea-9499-8cabe633a1d0.png"> Python `.pyc` and `.pyo`
-* <img width="15" alt="EVM" src="https://user-images.githubusercontent.com/2865694/84128845-702fd300-aa41-11ea-8202-d7bbb5fda19b.png"> Ethereum/EVM based Smart Contracts
+* <img width="15" alt="EVM" src="https://user-images.githubusercontent.com/2865694/84128845-702fd300-aa41-11ea-8202-d7bbb5fda19b.png"> Ethereum/EVM based Smart Contracts 
+    * (Experimental, [Linux/MacOs only](https://github.com/eveem-org/panoramix/issues/19))
 
 Just `right-click → Decompile` on a supported executable and wait for the magic to happen.
 
@@ -80,6 +81,7 @@ Have phun 🙌
 * Note: Panoramix is run in local mode. EVM byte-code is **not** sent to eveem.org.
   * It will attempt to download a function signature database on first load.
   * It will cache files to `<userhome>/.panoramix`.
+* No Windows support :/ ([see this issue](https://github.com/eveem-org/panoramix/issues/19)).
 
 </details>
 
@@ -101,13 +103,13 @@ Have phun 🙌
 
 This extension wouldn't be possible without the smarties that are developing the following reverse-engineering tools:
 
-* [Ghidra](https://github.com/NationalSecurityAgency/ghidra/)
-* [JadX](https://github.com/skylot/jadx/)
-* [JD-CLI](https://github.com/kwart/jd-cmd)
-* [dex2Jar](https://github.com/pxb1988/dex2jar)
+* [Ghidra](https://github.com/NationalSecurityAgency/ghidra/) by [@NSA/CSS](https://twitter.com/NSAGov)
+* [JadX](https://github.com/skylot/jadx/) by [@skylot](https://github.com/skylot/)
+* [JD-CLI](https://github.com/kwart/jd-cmd) by [@Josef Cacek](https://github.com/kwart)
+* [dex2Jar](https://github.com/pxb1988/dex2jar) by [@Bob Pan](https://github.com/pxb1988)
 * [IDA Pro Advanced & Decompiler](https://www.hex-rays.com/products/decompiler/)
-* [python-uncompyle6](https://github.com/rocky/python-uncompyle6/)
-* [panoramix](https://github.com/eveem-org/panoramix) the engine behind [eveem.org](https://www.eveem.org/)
+* [python-uncompyle6](https://github.com/rocky/python-uncompyle6/) by [@R. Bernstein](https://github.com/rocky)
+* [panoramix](https://github.com/eveem-org/panoramix) the engine behind [eveem.org](https://www.eveem.org/) created by [@Tomasz Kolinko](https://twitter.com/kolinko)
 * LogoMakr (CC; Logo)
 
 ## Release Notes

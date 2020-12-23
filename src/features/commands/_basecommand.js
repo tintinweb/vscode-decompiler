@@ -35,6 +35,7 @@ class BaseCommand {
                 command = path.basename(command);
             }
         }
+        //console.log(command + " " + args.join(" "));
         /** /windows bugfix #6 */
         const cmd = spawn(command, args, {
             stdio: options.stdio || ['ignore', options.onStdOut ? 'pipe' : 'ignore', options.onStdErr ? 'pipe' : 'ignore'],

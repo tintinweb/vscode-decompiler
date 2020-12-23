@@ -114,7 +114,7 @@ class DefaultCmd extends BaseCommand {
                         "-import", `${binaryPath}`,
                         "-scriptPath", `${path.join(settings.extension().extensionPath, "scripts")}`,
                         //"-postscript", "ghidra_annotate.py", 
-                        "-postscript", "ghidra_decompile.py", outputFilePath
+                        "-postScript", `${path.join(settings.extension().extensionPath, "scripts", "ghidra_decompile.py")}`, outputFilePath
                     ],
                     {
                         onClose: (code) => {

@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.0.8
+- fix: ghidra compatibility issues #15
+
 ## 0.0.7
 - new: added support for decompiling Ethereum EVM byte-code
 - new: command `vscode-decompiler.decompileShowContent` that takes file content instead of file paths.

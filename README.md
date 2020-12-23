@@ -105,7 +105,7 @@ Save the `EVM` byte-code in a file with extension `.evm`, then `right-click → 
 
 ## Troubleshooting & FAQ
 
-- (macOs) "macOs cannot verify the developer of "decompiler" ...
+- (macOs) "macOs cannot verify the developer of 'decompiler' ...
   - Follow the fix outline in https://support.apple.com/en-za/guide/mac-help/mh40616/mac. 
   - Verify that you've downloaded ghidra from the original website and verify checksums.
   - Open the `<ghidra-install-folder>/Ghidra/Features/Decompiler/os/osx64` in finder, <kbd>Ctrl</kbd>+<kbd>mouseClick</kbd> on `decompile` → `open` (you only need to do this one time).

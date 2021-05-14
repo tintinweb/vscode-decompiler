@@ -110,7 +110,7 @@ Save the `EVM` byte-code in a file with extension `.evm`, then `right-click → 
 
 - Follow the fix outline in https://support.apple.com/en-za/guide/mac-help/mh40616/mac. 
 - Verify that you've downloaded ghidra from the original website, verify checksums. **Note:** you're running an NSA tool on your computer, just saying.
-- Open the `<ghidra-install-folder>/Ghidra/Features/Decompiler/os/osx64` in finder, <kbd>Ctrl</kbd>+<kbd>mouseClick</kbd> on `decompile` → `open` (you only need to do this one time).
+- Open the `<ghidra-install-folder>/Ghidra/Features/Decompiler/os/osx64` in finder, <kbd>Ctrl</kbd>+<kbd>mouseClick</kbd> on `decompile` → `open` and **confirm that you trust the application** (you only need to do this one time).
 
 <img src="https://user-images.githubusercontent.com/2865694/103020817-6a1ac300-4549-11eb-89ab-e17d8d34e1da.png" height=175px></img>
 

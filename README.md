@@ -129,6 +129,8 @@ Save the `EVM` byte-code in a file with extension `.evm`, then `right-click → 
 - make sure `ghidraRun` and `support/analyzeHeadless` run without errors (you may have to follow the analyzeheadless documentation to provide meaningful parameters for this test)
 - check out the ghidra application log in (windows) `c:\users\<yourname>\.ghidra\<.ghidraversion>\application.log`
 
+Note: **always** restart vscode after changing env vars for changes to take effect.
+
 
 ## Credits
 

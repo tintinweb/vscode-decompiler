@@ -63,6 +63,7 @@ Save the `EVM` byte-code in a file with extension `.evm`, then `right-click → 
     * set preference to `idaPro (experimental Windows Only)` in `code → preferences → settings: vscode-decompiler.default.decompiler.selected`.
     * we'll automatically try to run 32 and 64bits `idaw` on the target application (preference on what executable is configured by you)
     * If you're running `<= IDA Pro 6.6` and the normal IDA decompilation mode does not work you can try the set preference to `idaPro legacy hexx-plugin (experimental Windows Only)` in `code → preferences → settings: vscode-decompiler.default.decompiler.selected`. Note: Use this method only if the normal IDA Pro mode doesnt work. Caveat: `idaw*.exe` must not be in a path that contains spaces, ask @microsoft why 😉.
+* You're using Ghidra? Great! Now please follow the [Ghidra installation guide](https://ghidra-sre.org/InstallationGuide.html#JavaNotes) (JAVA setup in particular). Make sure both `ghidraRun` and `support/analyzeHeadless` run without errors.
 
 </details>
 <details>
@@ -105,12 +106,28 @@ Save the `EVM` byte-code in a file with extension `.evm`, then `right-click → 
 
 ## Troubleshooting & FAQ
 
-- (macOs) "macOs cannot verify the developer of 'decompiler' ...
-  - Follow the fix outline in https://support.apple.com/en-za/guide/mac-help/mh40616/mac. 
-  - Verify that you've downloaded ghidra from the original website, verify checksums. **Note:** you're running an NSA tool on your computer, just saying.
-  - Open the `<ghidra-install-folder>/Ghidra/Features/Decompiler/os/osx64` in finder, <kbd>Ctrl</kbd>+<kbd>mouseClick</kbd> on `decompile` → `open` (you only need to do this one time).
-![image](https://user-images.githubusercontent.com/2865694/103020817-6a1ac300-4549-11eb-89ab-e17d8d34e1da.png)
+### (macOs) "macOs cannot verify the developer of 'decompiler' ...
 
+- Follow the fix outline in https://support.apple.com/en-za/guide/mac-help/mh40616/mac. 
+- Verify that you've downloaded ghidra from the original website, verify checksums. **Note:** you're running an NSA tool on your computer, just saying.
+- Open the `<ghidra-install-folder>/Ghidra/Features/Decompiler/os/osx64` in finder, <kbd>Ctrl</kbd>+<kbd>mouseClick</kbd> on `decompile` → `open` (you only need to do this one time).
+
+<img src="https://user-images.githubusercontent.com/2865694/103020817-6a1ac300-4549-11eb-89ab-e17d8d34e1da.png" height=175px></img>
+
+### (General) This thing failed with: {"code":1,"type":"single"}. What does this mean?
+
+- Your tool (Ghidra/Ida/...) is not set up correctly and therefore execution failed. The path may be wrong, the tool may fail due ti an incorrect java configuration or the java version is incompatible. There are many ways this error can be provoked and it's in 99% of cases a misconfiguration of the tool or the environment it requires (e.g. java env vars, version, etc)
+- code: is the tools exit code. we are expecting success (0) but a tool may return non-zero to indicate an error. Check the tools output to troubleshoot. code=1 means the tool retunred exitcode 1, indicating an error conditon.
+- type: is how ths tool got executed. single or multi command. ignore this.
+
+### (Ghidra) Failed to run decompiliation command. Check your configuration. {"code":1,"type":"single"}
+
+- make sure you're using a **supported** java version (e.g. win: jdk 14 is working, jdk 16 seems to be incompatible)
+- make sure environment vars are set up correctly ([ghida setup doc](https://ghidra-sre.org/InstallationGuide.html#JavaNotes) [google: setting env vars](https://www.google.com/search?q=how+to+set+permanent+env+var+win+10))
+  - `JAVA_HOME` pointing to your jdk installation folder
+  - `PATH` including an en try pointing to `$JAVA_HOME/bin` (win: `%JAVA_HOME\bin`)
+- make sure `ghidraRun` and `support/analyzeHeadless` run without errors (you may have to follow the analyzeheadless documentation to provide meaningful parameters for this test)
+- check out the ghidra application log in (windows) `c:\users\<yourname>\.ghidra\<.ghidraversion>\application.log`
 
 
 ## Credits

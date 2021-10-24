@@ -48,10 +48,10 @@ class DefaultCmd extends BaseCommand {
                         if (!toolpath) {
                             let brewAvailable = which.sync('brew', { nothrow: true });
                             if (brewAvailable) {
-                                vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. Please run `brew cask install ghidra` or install it from the official website and configure the path in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`", "Install").then(choice => {
+                                vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. Please run `brew install --cask ghidra` or install it from the official website and configure the path in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`", "Install").then(choice => {
                                     if (choice == "Install") {
                                         vscode.window.showInformationMessage("Homebrew: Installing Ghidra... This can take some time...");
-                                        BaseCommand._exec("brew", ["cask", "install", "ghidra"], {
+                                        BaseCommand._exec("brew", ["install", "--cask", "ghidra"], {
                                             onClose: (code) => {
                                                 if (code == 0) {
                                                     vscode.window.showInformationMessage("Homebrew: Ghidra installed.");
@@ -64,7 +64,7 @@ class DefaultCmd extends BaseCommand {
                                     }
                                 });
                             } else {
-                                vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. Please run `brew cask install ghidra` or install it from the official website and configure the path in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`");
+                                vscode.window.showWarningMessage("`Ghidra` is required to decompile binaries. Please run `brew install --cask ghidra` or install it from the official website and configure the path in: code -> preferences -> settings -> `vscode-decompiler.tool.ghidra.path`");
                             }
                             return reject();
                         }

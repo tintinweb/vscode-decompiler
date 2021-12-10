@@ -89,6 +89,11 @@ class DefaultCmd extends BaseCommand {
                         return reject();
                 }
             }
+            
+            // If both Windows and Ghidra are being used, append ".bat" to toolpath if not already present
+            if (process.platform == "win32" && toolpath.includes("analyzeHeadless") && !toolpath.endsWith(".bat")){
+                toolpath += ".bat";
+            }
 
             console.log(toolpath);
             tmp.setGracefulCleanup();

@@ -46,6 +46,8 @@ with open(dst, 'w') as f:
 
         # decompile each function
         tokengrp = decompinterface.decompileFunction(function, 0, ConsoleTaskMonitor())
-        
-        f.write(str(tokengrp.getDecompiledFunction().getC()))
+        try:
+            f.write(str(tokengrp.getDecompiledFunction().getC()))
+        except Exception as e:
+            f.write("\n/* vscode-decompiler: Error decompiling function: %r */"%e)
 sys.stderr.write("#DECOMPILE-STATUS,ok")

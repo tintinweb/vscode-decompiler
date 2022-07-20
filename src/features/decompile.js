@@ -38,6 +38,17 @@ class DecompileCtrl {
 
             progress.report({ increment: 0 });
 
+            if(!vscode.window.outputChannel){
+                vscode.window.outputChannel = vscode.window.createOutputChannel('decompiler.tool');
+            }
+            vscode.window.outputChannel.clear();
+            vscode.window.outputChannel.appendLine("====================================================================");
+            vscode.window.outputChannel.appendLine(`    Decompiling ${uri.fsPath}`);
+            vscode.window.outputChannel.appendLine("====================================================================");
+            vscode.window.outputChannel.appendLine("");
+            vscode.window.outputChannel.appendLine("StdErr:");
+            vscode.window.outputChannel.appendLine("");
+
             return this.decompile(
                 uri,
                 (msg) => {
@@ -50,21 +61,24 @@ class DecompileCtrl {
                     }
 
                 },
-                token);
+                token,
+                (errMsg) => {
+                    vscode.window.outputChannel.appendLine(errMsg);
+                });
         });
     }
 
-    decompile(uri, progressCallback, token) {
+    decompile(uri, progressCallback, token, onErrorCallback) {
         let ext = path.extname(uri.fsPath);
 
         let tool = this.commandHandler.cmdForFileExtension[ext];
         if (tool) {
-            return tool.decompile(uri, progressCallback, token);
+            return tool.decompile(uri, progressCallback, token, onErrorCallback);
         }
         //try default
         tool = this.commandHandler.cmdForFileExtension['*'];
         if (tool) {
-            return tool.decompile(uri, progressCallback, token);
+            return tool.decompile(uri, progressCallback, token, onErrorCallback);
         }
         vscode.window.showErrorMessage(`I'm sorry, I don't know how to decompile file ${ext} :/`);
     }

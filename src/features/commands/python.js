@@ -20,11 +20,11 @@ class PythonCmd extends BaseCommand {
         return ['.pyo', '.pyc'];
     }
 
-    decompile(uri, progressCallback, token){
-        return this.pythonDecompile(uri.fsPath, progressCallback, token);
+    decompile(uri, progressCallback, token, onErrorCallback){
+        return this.pythonDecompile(uri.fsPath, progressCallback, token, onErrorCallback);
     }
 
-    pythonDecompile(binaryPath, progressCallback, token) {
+    pythonDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.uncompyle.path;
@@ -48,7 +48,6 @@ class PythonCmd extends BaseCommand {
                  * 
                  * [uncompyle6, -d out, input.pyc/pyo]
                  */
-
                 let cmd = BaseCommand._exec(toolpath, ["-o", projectPath, binaryPath],
                     {
                         onClose: (code) => {
@@ -91,6 +90,12 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                             console.log(data);
                             if (progressCallback) {
                                 progressCallback({ message: "java decompile", increment: 20 });
+                            }
+                        },
+                        onStdErr: (data) => {
+                            if(onErrorCallback){
+                                data = `${data}`;
+                                onErrorCallback(data);
                             }
                         }
                     }

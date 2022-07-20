@@ -17,20 +17,20 @@ class JavaCmd extends BaseCommand {
         return ['.class', '.jar'];
     }
 
-    decompile(uri, progressCallback, token){
+    decompile(uri, progressCallback, token, onErrorCallback){
         if (settings.extensionConfig().java.decompiler.selected == "jd-cli") {
-            return this.jdcliDecompile(uri.fsPath, progressCallback, token);
+            return this.jdcliDecompile(uri.fsPath, progressCallback, token, onErrorCallback);
         }
-        return this.jadxDecompile(uri.fsPath, progressCallback, token);
+        return this.jadxDecompile(uri.fsPath, progressCallback, token, onErrorCallback);
     }
 
-    jdcliDecompile(binaryPath, progressCallback, token) {
+    jdcliDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.jdcli.path;
 
             if (!toolpath) {
-                toolpath = path.join(settings.extension().extensionPath, `bundled_tools/jd-cli-1.0.1.Final-dist/jd-cli${process.platform.startsWith('win') ? ".bat" : ""}`);
+                toolpath = path.join(settings.extension().extensionPath, `bundled_tools/jd-cli-jd-cli-1.2.1/jd-cli${process.platform.startsWith('win') ? ".bat" : ""}`);
             }
 
             console.log(toolpath);
@@ -77,6 +77,12 @@ class JavaCmd extends BaseCommand {
                             if (progressCallback) {
                                 progressCallback({ message: "java decompile", increment: 4 });
                             }
+                        },
+                        onStdErr: (data) => {
+                            if(onErrorCallback){
+                                data = `${data}`;
+                                onErrorCallback(data);
+                            }
                         }
                     }
                 );
@@ -90,13 +96,13 @@ class JavaCmd extends BaseCommand {
         });
     }
 
-    jadxDecompile(binaryPath, progressCallback, token) {
+    jadxDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.jadx.path;
 
             if (!toolpath) {
-                toolpath = path.join(settings.extension().extensionPath, `bundled_tools/jadx-1.1.0/bin/jadx${process.platform.startsWith('win') ? ".bat" : ""}`);
+                toolpath = path.join(settings.extension().extensionPath, `bundled_tools/jadx-1.4.2/bin/jadx${process.platform.startsWith('win') ? ".bat" : ""}`);
             }
 
             console.log(toolpath);
@@ -118,6 +124,7 @@ class JavaCmd extends BaseCommand {
                  * 
                  * [jadx, -d out, input.dex]
                  */
+                let prevs_percent = 0;
                 let cmd = BaseCommand._exec(toolpath, ["-d", projectPath, binaryPath],
                     {
                         onClose: (code) => {
@@ -141,7 +148,19 @@ class JavaCmd extends BaseCommand {
                             data = `${data}`;
                             console.log(data);
                             if (progressCallback) {
-                                progressCallback({ message: "java decompile", increment: 20 });
+                                let details = data.match(/(\d+)%/);
+                                if (details && details.length > 1){
+                                    progressCallback({ message: `java decompile: ${details[1]}%`, increment: parseInt(details[1])-prevs_percent });
+                                    prevs_percent = parseInt(details[1]);
+                                } else {
+                                    progressCallback({ message: `java decompile: ${prevs_percent}% (${data})`, increment: 0 });
+                                }
+                            }
+                        },
+                        onStdErr: (data) => {
+                            if(onErrorCallback){
+                                data = `${data}`;
+                                onErrorCallback(data);
                             }
                         }
                     }

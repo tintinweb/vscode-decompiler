@@ -17,16 +17,16 @@ class AndroidCmd extends JavaCmd {
         return ['.apk'];
     }
     
-    decompile(uri, progressCallback, token){
+    decompile(uri, progressCallback, token, onErrorCallback){
         if (settings.extensionConfig().apk.decompiler.selected == "jd-cli") {
             progressCallback({ message: "unpacking...", increment: 2 });
             return this.dex2jarConvert(uri.fsPath).then(jarFile => {
                 progressCallback({ message: "decompiling classes... (this may take some time)", increment: 5 });
-                return this.jdcliDecompile(jarFile, progressCallback, token);
+                return this.jdcliDecompile(jarFile, progressCallback, token, onErrorCallback);
             });
         }
         //default: jadx
-        return this.jadxDecompile(uri.fsPath, progressCallback, token);
+        return this.jadxDecompile(uri.fsPath, progressCallback, token, onErrorCallback);
     }
 
     dex2jarConvert(binaryPath) {

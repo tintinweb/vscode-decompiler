@@ -172,7 +172,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
         });
     }
 
-    idaDecompile(binaryPath, progressCallback, token) {
+    idaDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.idaPro.path;
@@ -330,6 +330,13 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                     cmd.kill("SIGKILL");
                                     console.log(`${cmd.pid} - process killed - ${cmd.killed}`);
                                 });
+                            }
+                        },
+                        onStdErr: (data) => {
+                            data = `${data}`;
+                            console.log(data);
+                            if(onErrorCallback){
+                                onErrorCallback(data);
                             }
                         }
                     }

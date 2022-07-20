@@ -46,7 +46,8 @@ class DecompileCtrl {
             vscode.window.outputChannel.appendLine(`    Decompiling ${uri.fsPath}`);
             vscode.window.outputChannel.appendLine("====================================================================");
             vscode.window.outputChannel.appendLine("");
-            vscode.window.outputChannel.appendLine("StdErr:");
+            vscode.window.outputChannel.appendLine("Errors: ");
+            vscode.window.outputChannel.appendLine("------- ");
             vscode.window.outputChannel.appendLine("");
 
             return this.decompile(

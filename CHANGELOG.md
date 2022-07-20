@@ -1,8 +1,11 @@
 # Change Log
 
 ## 0.1.0
-- new: better error reporting. if the extension fails to decompiler a file it will now show an output with the stderr of the external tool.
-- fix: ghidra decompile script now handles exception due to functions not being decompilable
+- new: better error reporting. if the extension fails to decompile a target it will now show an output with the stderr of the external tool in the vscode/output view.
+
+<img width="705" alt="image" src="https://user-images.githubusercontent.com/2865694/179998678-4eaca055-1be8-4c19-b850-1c1caf3c3fb3.png">
+
+- fix: ghidra decompile script exception handling. the script now continues if ghidra is unable to decompile certain functions.
 - updated: jadx to [1.4.2](https://github.com/skylot/jadx/releases/tag/v1.4.2)
 - updated: jd-cli to [1.2.1](https://github.com/intoolswetrust/jd-cli/releases/tag/jd-cli-1.2.1)
 - updated: Readme reference to brew cask command to the newer --cask syntax #17 - thanks @demns

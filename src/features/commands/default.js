@@ -22,15 +22,15 @@ class DefaultCmd extends BaseCommand {
         return ['*'];
     }
 
-    decompile(uri, progressCallback, token){
+    decompile(uri, progressCallback, token, onErrorCallback){
         //assume binary?
         if (settings.extensionConfig().default.decompiler.selected.includes("idaPro")) {
-            return this.idaDecompile(uri.fsPath, progressCallback, token);
+            return this.idaDecompile(uri.fsPath, progressCallback, token, onErrorCallback);
         }
-        return this.ghidraDecompile(uri.fsPath, progressCallback, token);
+        return this.ghidraDecompile(uri.fsPath, progressCallback, token, onErrorCallback);
     }
 
-    ghidraDecompile(binaryPath, progressCallback, token) {
+    ghidraDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.ghidra.path;
@@ -147,7 +147,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                     language: "cpp"
                                 });
                             } else {
-                                reject({ code: code, type: "single" });
+                                reject({ code: code, type: "single", err: "tool returned non-zero exit code" });
                             }
                             cleanupCallback();
                         },
@@ -156,6 +156,9 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                             console.log(data);
                             if (progressCallback && data.startsWith("#DECOMPILE-PROGRESS,")) {
                                 progressCallback(data.replace("#DECOMPILE-PROGRESS,", "").split(","));
+                            }
+                            else if(onErrorCallback){
+                                onErrorCallback(data);
                             }
                         }
                     }
@@ -169,7 +172,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
         });
     }
 
-    idaDecompile(binaryPath, progressCallback, token) {
+    idaDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
             let toolpath = settings.extensionConfig().tool.idaPro.path;
@@ -327,6 +330,13 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                     cmd.kill("SIGKILL");
                                     console.log(`${cmd.pid} - process killed - ${cmd.killed}`);
                                 });
+                            }
+                        },
+                        onStdErr: (data) => {
+                            data = `${data}`;
+                            console.log(data);
+                            if(onErrorCallback){
+                                onErrorCallback(data);
                             }
                         }
                     }

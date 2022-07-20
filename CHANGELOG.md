@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.1.0
+- new: better error reporting. if the extension fails to decompiler a file it will now show an output with the stderr of the external tool.
+- fix: ghidra decompile script now handles exception due to functions not being decompilable
+- updated: jadx to [1.4.2](https://github.com/skylot/jadx/releases/tag/v1.4.2)
+- updated: jd-cli to [1.2.1](https://github.com/intoolswetrust/jd-cli/releases/tag/jd-cli-1.2.1)
+- updated: Readme reference to brew cask command to the newer --cask syntax #17 - thanks @demns
+
+
 ## 0.0.8
 - fix: ghidra compatibility issues #15
 

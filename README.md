@@ -59,10 +59,10 @@ Save the `EVM` byte-code in a file with extension `.evm`, then `right-click → 
     * otherwise please specify the path to the executable `<ghidra>/support/analyzeHeadless` in `code → preferences → settings: vscode-decompiler.tool.ghidra.path` and make sure that the `analyzeHeadless` script runs without errors (and is not prompting for the JDK Home 🤓). Here's a sample Ghidra config for Windows:
     ![ghidraconf](https://user-images.githubusercontent.com/2865694/81807509-7dc76b00-951e-11ea-99d7-359bd624cce5.png)
 * (Experimental; Windows Only) Optional a licensed version of [IDA Pro](https://www.hex-rays.com/products/decompiler/) with decompiler support.
-    * specify the path to the `idaw` executable in `code → preferences → settings: vscode-decompiler.tool.idaPro.path`, e.g. `c:\IDA68\idaw.exe`.
+    * specify the path to the `idaw`(`idat` in IDA Pro 7.0+) executable in `code → preferences → settings: vscode-decompiler.tool.idaPro.path`, e.g. `c:\IDA68\idaw.exe`.
     * set preference to `idaPro (experimental Windows Only)` in `code → preferences → settings: vscode-decompiler.default.decompiler.selected`.
     * we'll automatically try to run 32 and 64bits `idaw` on the target application (preference on what executable is configured by you)
-    * If you're running `<= IDA Pro 6.6` and the normal IDA decompilation mode does not work you can try the set preference to `idaPro legacy hexx-plugin (experimental Windows Only)` in `code → preferences → settings: vscode-decompiler.default.decompiler.selected`. Note: Use this method only if the normal IDA Pro mode doesnt work. Caveat: `idaw*.exe` must not be in a path that contains spaces, ask @microsoft why 😉.
+    * If you're running `<= IDA Pro 6.6` and the normal IDA decompilation mode does not work you can try the set preference to `idaPro legacy hexx-plugin (experimental Windows Only)` in `code → preferences → settings: vscode-decompiler.default.decompiler.selected`. Note: Use this method only if the normal IDA Pro mode doesnt work. Caveat: `idaw*.exe`(`idat*.exe` in IDA Pro 7.0+) must not be in a path that contains spaces, ask @microsoft why 😉.
 * You're using Ghidra? Great! Now please follow the [Ghidra installation guide](https://ghidra-sre.org/InstallationGuide.html#JavaNotes) (JAVA setup in particular). Make sure both `ghidraRun` and `support/analyzeHeadless` run without errors.
 
 </details>

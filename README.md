@@ -48,7 +48,8 @@ Save the `EVM` byte-code in a file with extension `.evm`, then `right-click → 
   <summary style='font-size:12pt'><b>Requirements:</b> General</summary>
 
 * Requires Java (11+) to be installed system-wide. Just install the latest JRE/JDK for your OS (e.g. OpenJDK, Oracle JDK).
-* Other tools are bundled with the extension. Just make sure Java is available in your `PATH`.
+* Requires Python (3.8+) to be installed system-wide and included in the PATH. Just install the latest Python3 for your OS.
+* Other tools are bundled with the extension. Just make sure Java and Python are available in your `PATH`.
 
 </details>
 <details>

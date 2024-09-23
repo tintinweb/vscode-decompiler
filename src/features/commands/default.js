@@ -1,9 +1,9 @@
 'use strict';
-/** 
+/**
  * @author github.com/tintinweb
  * @license MIT
- * 
- * 
+ *
+ *
  * */
 const vscode = require('vscode');
 const path = require('path');
@@ -33,7 +33,7 @@ class DefaultCmd extends BaseCommand {
     ghidraDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
-            let toolpath = settings.extensionConfig().tool.ghidra.path;
+            let toolpath = settings.handleConfigOption(settings.extensionConfig().tool.ghidra.path);
 
             if (!toolpath) {
                 switch (process.platform) {
@@ -104,16 +104,16 @@ class DefaultCmd extends BaseCommand {
                 console.log('Project Directory: ', projectPath);
                 let outputFilePath = tmp.tmpNameSync(options);
 
-                /** 
-                 * 
+                /**
+                 *
                  * decompile
-                 * 
+                 *
                  */
                 let cmd = BaseCommand._exec(toolpath,
                     [projectPath, "vscode-decompiler",
                         "-import", `${binaryPath}`,
                         "-scriptPath", `${path.join(settings.extension().extensionPath, "scripts")}`,
-                        //"-postscript", "ghidra_annotate.py", 
+                        //"-postscript", "ghidra_annotate.py",
                         "-postScript", `${path.join(settings.extension().extensionPath, "scripts", "ghidra_decompile.py")}`, outputFilePath
                     ],
                     {
@@ -122,7 +122,7 @@ class DefaultCmd extends BaseCommand {
                                 if (!fs.existsSync(outputFilePath)) {
                                     return reject({ err: "Output file not produced" });
                                 }
-                                let decompiled = `/** 
+                                let decompiled = `/**
 *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
 *  Target:    ${binaryPath}
 **/
@@ -175,7 +175,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
     idaDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
-            let toolpath = settings.extensionConfig().tool.idaPro.path;
+            let toolpath = settings.handleConfigOption(settings.extensionConfig().tool.idaPro.path);
 
             if (!toolpath) {
                 vscode.window.showWarningMessage("`IdaPro` is required to decompile binaries. please configure the path to `<ida>/ida[wl].exe` in: code -> preferences -> settings -> `vscode-decompiler.tool.idaPro.path`");
@@ -195,17 +195,17 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
 
                 console.log('Project Directory: ', projectPath);
                 let outputFilePath = path.join(projectPath, `${path.basename(binaryPath, path.extname(binaryPath))}.c`);
-                /** 
-                 * 
+                /**
+                 *
                  * decompile
-                 * 
-                 * 
+                 *
+                 *
                  *  idascript = os.path.abspath(os.path.join(get_download_dir(), "ida_batch_decompile.py"))
                     destination_file = os.path.join(destination, os.path.split(source)[1].rsplit(".", 1)[0] + '.c')
 
                     decompile_script_cmd = '%s -o\\"%s\\"' % (idascript, destination_file)
                     cmd = [Ida32._get_command(), '-B', '-M', '-S"%s"' % decompile_script_cmd, '"' + source + '"']
-                 * 
+                 *
                  */
 
                 //generate idaw candidates:
@@ -261,7 +261,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                     return reject({ err: "Output file not produced" });
                                 }
 
-                                const decompiled = `/** 
+                                const decompiled = `/**
 *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
 *  Target:    ${binaryPath}
 **/
@@ -297,7 +297,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
                                                     return reject({ err: "Output file not produced" });
                                                 }
 
-                                                const decompiled = `/** 
+                                                const decompiled = `/**
 *  Generator: ${settings.extension().packageJSON.name}@${settings.extension().packageJSON.version} (https://marketplace.visualstudio.com/items?itemName=${settings.extension().packageJSON.publisher}.${settings.extension().packageJSON.name})
 *  Target:    ${binaryPath}
 **/
@@ -350,7 +350,7 @@ ${fs.readFileSync(outputFilePath, 'utf8')};`;
         });
     }
 
-    
+
 }
 
 module.exports = {

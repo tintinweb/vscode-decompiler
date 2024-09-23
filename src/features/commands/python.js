@@ -1,9 +1,9 @@
 'use strict';
-/** 
+/**
  * @author github.com/tintinweb
  * @license MIT
- * 
- * 
+ *
+ *
  * */
 const vscode = require('vscode');
 const path = require('path');
@@ -27,7 +27,7 @@ class PythonCmd extends BaseCommand {
     pythonDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
-            let toolpath = settings.extensionConfig().tool.uncompyle.path;
+            let toolpath = settings.handleConfigOption(settings.extensionConfig().tool.uncompyle.path);
 
             console.log(toolpath);
             tmp.setGracefulCleanup();
@@ -42,10 +42,10 @@ class PythonCmd extends BaseCommand {
 
                 console.log('Project Directory: ', projectPath);
                 let outputFilePath = path.join(projectPath, `${path.basename(binaryPath, path.extname(binaryPath))}${path.extname(binaryPath) == ".pyc" ? ".py" : ".pyo_dis"}`);
-                /** 
-                 * 
+                /**
+                 *
                  * decompile
-                 * 
+                 *
                  * [uncompyle6, -d out, input.pyc/pyo]
                  */
                 let cmd = BaseCommand._exec(toolpath, ["-o", projectPath, binaryPath],

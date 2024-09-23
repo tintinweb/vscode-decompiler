@@ -1,9 +1,9 @@
 'use strict';
-/** 
+/**
  * @author github.com/tintinweb
  * @license MIT
- * 
- * 
+ *
+ *
  * */
 const path = require('path');
 const tmp = require('tmp');
@@ -16,7 +16,7 @@ class AndroidCmd extends JavaCmd {
     getSupportedFileExtensions(){
         return ['.apk'];
     }
-    
+
     decompile(uri, progressCallback, token, onErrorCallback){
         if (settings.extensionConfig().apk.decompiler.selected == "jd-cli") {
             progressCallback({ message: "unpacking...", increment: 2 });
@@ -31,7 +31,7 @@ class AndroidCmd extends JavaCmd {
 
     dex2jarConvert(binaryPath) {
         return new Promise((resolve, reject) => {
-            let toolpath = settings.extensionConfig().tool.dex2jar.path;
+            let toolpath = settings.handleConfigOption(settings.extensionConfig().tool.dex2jar.path);
             if (!toolpath) {
                 toolpath = path.join(settings.extension().extensionPath, `bundled_tools/dex-tools-2.1-SNAPSHOT/d2j-dex2jar${process.platform.startsWith('win') ? ".bat" : ".sh"}`);
             }
@@ -45,10 +45,10 @@ class AndroidCmd extends JavaCmd {
 
             let outputFilePath = tmp.tmpNameSync(options);
 
-            /** 
-             * 
+            /**
+             *
              * decompile
-             * 
+             *
              * [Dex2Jar._get_command(), '-o', destination, source]
              */
             JavaCmd._exec(toolpath, ["-o", outputFilePath, binaryPath],

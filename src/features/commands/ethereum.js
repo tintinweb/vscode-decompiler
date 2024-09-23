@@ -1,9 +1,9 @@
 'use strict';
-/** 
+/**
  * @author github.com/tintinweb
  * @license MIT
- * 
- * 
+ *
+ *
  * */
 const vscode = require('vscode');
 const path = require('path');
@@ -27,7 +27,7 @@ class EthereumEvmCmd extends BaseCommand {
     panoramixDecompile(binaryPath, progressCallback, token) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
-            let toolpath = settings.extensionConfig().tool.python38.path;
+            let toolpath = settings.handleConfigOption(settings.extensionConfig().tool.python38.path);
 
             if(!toolpath){
                 return reject({ err: "Python3.8 not found. Please specify the path in `code → preferences → settings: vscode-decompiler.tool.python38.path`" });
@@ -51,8 +51,8 @@ class EthereumEvmCmd extends BaseCommand {
                 if (err) throw err;
 
                 console.log('Project Directory: ', projectPath);
-                /** 
-                 * 
+                /**
+                 *
                  * decompile
                  * cat test.evm | /usr/local/opt/python@3.8/bin/python3.8 panoramix.py stdin --fast --silent
                  */
@@ -136,7 +136,7 @@ class EthereumEvmCmd extends BaseCommand {
 
                 //cmd.stdin.setEncoding('utf-8');
                 cmd.stdin.end(inputData);
-                
+
                 token.onCancellationRequested(() => {
                     cmd.kill("SIGKILL");
                     console.log(`${cmd.pid} - process killed - ${cmd.killed}`);

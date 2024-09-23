@@ -1,9 +1,9 @@
 'use strict';
-/** 
+/**
  * @author github.com/tintinweb
  * @license MIT
- * 
- * 
+ *
+ *
  * */
 const path = require('path');
 const tmp = require('tmp');
@@ -27,7 +27,7 @@ class JavaCmd extends BaseCommand {
     jdcliDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
-            let toolpath = settings.extensionConfig().tool.jdcli.path;
+            let toolpath = settings.handleConfigOption(settings.extensionConfig().tool.jdcli.path);
 
             if (!toolpath) {
                 toolpath = path.join(settings.extension().extensionPath, `bundled_tools/jd-cli-jd-cli-1.2.1/jd-cli${process.platform.startsWith('win') ? ".bat" : ""}`);
@@ -46,10 +46,10 @@ class JavaCmd extends BaseCommand {
 
                 console.log('Project Directory: ', projectPath);
 
-                /** 
-                 * 
+                /**
+                 *
                  * decompile
-                 * 
+                 *
                  * [JdCli._get_command(), '--outputDir', destination, source]
                  */
                 let cmd = BaseCommand._exec(toolpath, ["--outputDir", projectPath, binaryPath],
@@ -99,7 +99,7 @@ class JavaCmd extends BaseCommand {
     jadxDecompile(binaryPath, progressCallback, token, onErrorCallback) {
         let ctrl = this.ctrl;
         return new Promise((resolve, reject) => {
-            let toolpath = settings.extensionConfig().tool.jadx.path;
+            let toolpath = settings.handleConfigOption(settings.extensionConfig().tool.jadx.path);
 
             if (!toolpath) {
                 toolpath = path.join(settings.extension().extensionPath, `bundled_tools/jadx-1.4.2/bin/jadx${process.platform.startsWith('win') ? ".bat" : ""}`);
@@ -118,10 +118,10 @@ class JavaCmd extends BaseCommand {
 
                 console.log('Project Directory: ', projectPath);
 
-                /** 
-                 * 
+                /**
+                 *
                  * decompile
-                 * 
+                 *
                  * [jadx, -d out, input.dex]
                  */
                 let prevs_percent = 0;
